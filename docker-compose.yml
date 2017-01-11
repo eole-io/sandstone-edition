@@ -15,7 +15,7 @@ services:
         build: docker/websocket-server
         command: bin/websocket-server
         ports:
-            - 8089:8080
+            - 8089:25569
         volumes:
             - .:/var/www/html/
 
@@ -23,3 +23,5 @@ services:
         build: docker/php-fpm
         volumes:
             - .:/var/www/html/
+        links:
+            - websocket-server

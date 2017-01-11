@@ -6,6 +6,7 @@ use App\RestApiApplication;
 
 $app = new RestApiApplication([
     'project.root' => dirname(__DIR__),
+    'env' => 'docker',
     'debug' => true,
 ]);
 

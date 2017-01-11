@@ -5,6 +5,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 $app = new App\Application(array(
     'project.root' => dirname(__DIR__),
+    'env' => 'docker',
     'debug' => true,
 ));
 

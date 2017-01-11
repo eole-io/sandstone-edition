@@ -1,3 +1,4 @@
+vendor/
 var/cache/*
 var/logs/*
 !var/cache/.gitkeep

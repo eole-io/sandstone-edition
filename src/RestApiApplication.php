@@ -19,20 +19,32 @@ class RestApiApplication extends Application
     {
         parent::__construct($values);
 
-        $this->register(new Provider\HttpCacheServiceProvider(), array(
-            'http_cache.cache_dir' => $this['project.cache_dir'].'/http/',
-        ));
-
+        $this->registerDefaultProviders();
         $this->mountControllers();
 
-        $this->forwardEventToPushServer(HelloEvent::HELLO);
+        if ($this['debug']) {
+            $this->registerWebProfiler();
+        }
 
-        $this->register(new Provider\HttpFragmentServiceProvider());
+        $this->forwardEventToPushServer(HelloEvent::HELLO);
+    }
+
+    private function registerDefaultProviders()
+    {
         $this->register(new Provider\ServiceControllerServiceProvider());
+
+        $this->register(new Provider\HttpCacheServiceProvider(), array(
+            'http_cache.cache_dir' => $this['project.root'].'/var/cache/http-cache/',
+        ));
+    }
+
+    private function registerWebProfiler()
+    {
+        $this->register(new Provider\HttpFragmentServiceProvider());
         $this->register(new Provider\TwigServiceProvider());
 
         $this->register(new Provider\WebProfilerServiceProvider(), array(
-            'profiler.cache_dir' => $this['project.cache_dir'].'/profiler',
+            'profiler.cache_dir' => $this['project.root'].'/var/cache/profiler',
             'profiler.mount_prefix' => '/_profiler',
         ));
 

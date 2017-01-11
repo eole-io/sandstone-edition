@@ -1,11 +1,10 @@
 {
-    "name": "eole/sandstone-framework",
+    "name": "eole/sandstone-fullstack",
     "description": "A pre-configured edition for the Sandstone microframework",
     "license": "MIT",
     "type": "project",
     "require": {
         "eole/sandstone": "1.x",
-        "doctrine/cache": "1.x",
         "alcalyn/serializable-api-response": "~1.0"
     },
     "require-dev": {

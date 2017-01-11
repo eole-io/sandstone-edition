@@ -17,42 +17,67 @@ class Application extends BaseApplication
     {
         parent::__construct($values);
 
+        $this->loadEnvironment();
+        $this->registerSerializer();
+        $this->registerWebsocketServer();
+        $this->registerPushServer();
+        $this->registerApiResponse();
+    }
+
+    private function loadEnvironment()
+    {
         if (!isset($this['project.root'])) {
             throw new \LogicException('project.root must be defined.');
         }
 
-        if (!isset($this['project.cache_dir'])) {
-            $this['project.cache_dir'] = $this['project.root'].'/var/cache';
+        if (!isset($this['env'])) {
+            throw new \LogicException('env must be defined.');
         }
 
+        $this['environment'] = require $this['project.root'].'/config/environment-'.$this['env'].'.php';
+    }
+
+    private function registerSerializer()
+    {
         // Sandstone requires JMS serializer
         $this->register(new \Eole\Sandstone\Serializer\ServiceProvider());
 
+        // Register serializer metadata
         $this['serializer.builder']
             ->addMetadataDir($this['project.root'].'/src/Serializer')
-            ->setCacheDir($this['project.cache_dir'].'/serializer')
+            ->setCacheDir($this['project.root'].'/var/cache/serializer')
         ;
+    }
 
+    private function registerWebsocketServer()
+    {
         // Register and configure your websocket server
         $this->register(new \Eole\Sandstone\Websocket\ServiceProvider(), [
             'sandstone.websocket.server' => [
-                'bind' => '0.0.0.0',
-                'port' => '25569',
+                'bind' => $this['environment']['websocket']['server']['bind'],
+                'port' => $this['environment']['websocket']['server']['port'],
             ],
         ]);
+    }
 
+    private function registerPushServer()
+    {
         // Register Push Server and ZMQ bridge extension
-        $this->register(new \Eole\Sandstone\Push\ServiceProvider());
+        $this->register(new \Eole\Sandstone\Push\ServiceProvider(), [
+            'sandstone.push.enabled' => $this['environment']['push']['enabled'],
+        ]);
+
         $this->register(new \Eole\Sandstone\Push\Bridge\ZMQ\ServiceProvider(), [
             'sandstone.push.server' => [
-                'bind' => '127.0.0.1',
-                'host' => '127.0.0.1',
-                'port' => 5555,
+                'bind' => $this['environment']['push']['server']['bind'],
+                'host' => $this['environment']['push']['server']['host'],
+                'port' => $this['environment']['push']['server']['port'],
             ],
         ]);
+    }
 
-        // Register serializer metadata
-
+    private function registerApiResponse()
+    {
         // Register reponse filter as a service
         $this['acme.listener.api_response_filter'] = function () {
             $serializer = $this['serializer'];
