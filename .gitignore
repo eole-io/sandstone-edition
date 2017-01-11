@@ -1,0 +1,5 @@
+var/cache/*
+var/logs/*
+!var/cache/.gitkeep
+!var/logs/.gitkeep
+composer.lock

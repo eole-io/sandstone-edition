@@ -1,0 +1,17 @@
+{
+    "name": "eole/sandstone-framework",
+    "description": "A pre-configured edition for the Sandstone microframework",
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "eole/sandstone": "1.x",
+        "doctrine/cache": "1.x",
+        "alcalyn/serializable-api-response": "~1.0"
+    },
+    "require-dev": {
+        "silex/web-profiler": "2.x"
+    },
+    "autoload": {
+        "psr-4": { "App\\": "src/" }
+    }
+}

@@ -1,0 +1,13 @@
+#!/usr/bin/php
+<?php
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+$app = new App\Application(array(
+    'project.root' => dirname(__DIR__),
+    'debug' => true,
+));
+
+$console = new App\Console($app);
+
+$console->run();
