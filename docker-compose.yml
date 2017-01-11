@@ -20,6 +20,7 @@ services:
             - .:/var/www/html/
 
     php-fpm:
+        container_name: sandstone-php
         build: docker/php-fpm
         volumes:
             - .:/var/www/html/
