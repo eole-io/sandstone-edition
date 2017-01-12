@@ -56,10 +56,7 @@ class Application extends BaseApplication
     {
         // Register and configure your websocket server
         $this->register(new \Eole\Sandstone\Websocket\ServiceProvider(), [
-            'sandstone.websocket.server' => [
-                'bind' => $this['environment']['websocket']['server']['bind'],
-                'port' => $this['environment']['websocket']['server']['port'],
-            ],
+            'sandstone.websocket.server' => $this['environment']['websocket']['server'],
         ]);
     }
 
@@ -71,11 +68,7 @@ class Application extends BaseApplication
         ]);
 
         $this->register(new \Eole\Sandstone\Push\Bridge\ZMQ\ServiceProvider(), [
-            'sandstone.push.server' => [
-                'bind' => $this['environment']['push']['server']['bind'],
-                'host' => $this['environment']['push']['server']['host'],
-                'port' => $this['environment']['push']['server']['port'],
-            ],
+            'sandstone.push.server' => $this['environment']['push']['server'],
         ]);
     }
 
