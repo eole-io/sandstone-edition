@@ -25,4 +25,18 @@ services:
         volumes:
             - .:/var/www/html/
         links:
+            - database
             - websocket-server
+
+    database:
+        image: mariadb
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            PMA_HOST: database
+        ports:
+            - 8090:80

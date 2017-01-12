@@ -4,9 +4,7 @@ namespace App;
 
 use Silex\Provider;
 use Eole\Sandstone\Push\Debug\PushServerProfilerServiceProvider;
-use App\Controller\HelloController;
-use App\ControllerProvider\HelloControllerProvider;
-use App\Event\HelloEvent;
+use App\HelloProvider\HelloControllerProvider;
 
 class RestApiApplication extends Application
 {
@@ -20,13 +18,15 @@ class RestApiApplication extends Application
         parent::__construct($values);
 
         $this->registerDefaultProviders();
-        $this->mountControllers();
 
         if ($this['debug']) {
             $this->registerWebProfiler();
         }
 
-        $this->forwardEventToPushServer(HelloEvent::HELLO);
+        $helloControllerProvider = new HelloControllerProvider();
+
+        $this->register($helloControllerProvider);
+        $this->mount('api', $helloControllerProvider);
     }
 
     private function registerDefaultProviders()
@@ -34,7 +34,7 @@ class RestApiApplication extends Application
         $this->register(new Provider\ServiceControllerServiceProvider());
 
         $this->register(new Provider\HttpCacheServiceProvider(), array(
-            'http_cache.cache_dir' => $this['project.root'].'/var/cache/http-cache/',
+            'http_cache.cache_dir' => $this['project.root'].'/var/cache/http-cache',
         ));
     }
 
@@ -49,14 +49,5 @@ class RestApiApplication extends Application
         ));
 
         $this->register(new PushServerProfilerServiceProvider());
-    }
-
-    private function mountControllers()
-    {
-        $this['app.controllers.hello'] = function () {
-            return new HelloController($this['dispatcher']);
-        };
-
-        $this->mount('api', new HelloControllerProvider());
     }
 }

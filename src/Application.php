@@ -5,6 +5,7 @@ namespace App;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Alcalyn\SerializableApiResponse\ApiResponseFilter;
 use Eole\Sandstone\Application as BaseApplication;
+use App\HelloProvider\HelloServiceProvider;
 
 class Application extends BaseApplication
 {
@@ -22,6 +23,11 @@ class Application extends BaseApplication
         $this->registerWebsocketServer();
         $this->registerPushServer();
         $this->registerApiResponse();
+        $this->registerServices();
+
+        $this->register(new HelloServiceProvider());
+
+        $this->registerDoctrine();
     }
 
     private function loadEnvironment()
@@ -89,5 +95,27 @@ class Application extends BaseApplication
         $this->on(KernelEvents::VIEW, function ($event) {
             $this['acme.listener.api_response_filter']->onKernelView($event);
         });
+    }
+
+    private function registerServices()
+    {
+        $this['doctrine.mappings'] = function () {
+            return [];
+        };
+    }
+
+    private function registerDoctrine()
+    {
+        $this->register(new \Silex\Provider\DoctrineServiceProvider(), [
+            'db.options' => $this['environment']['database']['connection'],
+        ]);
+
+        $this->register(new \Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider(), [
+            'orm.proxies_dir' => $this['project.root'].'/var/cache/doctrine-proxies',
+            'orm.auto_generate_proxies' => $this['environment']['database']['orm']['auto_generate_proxies'],
+            'orm.em.options' => [
+                'mappings' => $this['doctrine.mappings'],
+            ],
+        ]);
     }
 }

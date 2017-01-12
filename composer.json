@@ -5,7 +5,8 @@
     "type": "project",
     "require": {
         "eole/sandstone": "1.x",
-        "alcalyn/serializable-api-response": "~1.0"
+        "alcalyn/serializable-api-response": "~1.0",
+        "dflydev/doctrine-orm-service-provider": "2.x"
     },
     "require-dev": {
         "silex/web-profiler": "2.x"
