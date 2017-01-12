@@ -12,6 +12,8 @@
         "silex/web-profiler": "2.x"
     },
     "autoload": {
-        "psr-4": { "App\\": "src/" }
+        "psr-4": {
+            "": "src/"
+        }
     }
 }

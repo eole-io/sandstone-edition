@@ -5,7 +5,6 @@ namespace App;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Alcalyn\SerializableApiResponse\ApiResponseFilter;
 use Eole\Sandstone\Application as BaseApplication;
-use App\HelloProvider\HelloServiceProvider;
 
 class Application extends BaseApplication
 {
@@ -24,9 +23,7 @@ class Application extends BaseApplication
         $this->registerPushServer();
         $this->registerApiResponse();
         $this->registerServices();
-
-        $this->register(new HelloServiceProvider());
-
+        $this->registerDoctrineMappings();
         $this->registerDoctrine();
     }
 
@@ -50,7 +47,7 @@ class Application extends BaseApplication
 
         // Register serializer metadata
         $this['serializer.builder']
-            ->addMetadataDir($this['project.root'].'/src/Serializer')
+            ->addMetadataDir($this['project.root'].'/src/App/Serializer')
             ->setCacheDir($this['project.root'].'/var/cache/serializer')
         ;
     }
@@ -102,6 +99,19 @@ class Application extends BaseApplication
         $this['doctrine.mappings'] = function () {
             return [];
         };
+    }
+
+    private function registerDoctrineMappings()
+    {
+        $this->extend('doctrine.mappings', function ($mappings, $app) {
+            $mappings []= [
+                'type' => 'annotation',
+                'namespace' => 'App\\Entity',
+                'path' => $app['project.root'].'/src/App/Entity',
+            ];
+
+            return $mappings;
+        });
     }
 
     private function registerDoctrine()
