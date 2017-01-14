@@ -30,7 +30,7 @@
             }
 
             // Connect to chat server
-            ab.connect('ws://localhost:8089', onSessionOpen, onError);
+            ab.connect('ws://'+window.location.hostname+':8089', onSessionOpen, onError);
         </script>
     </body>
 </html>
