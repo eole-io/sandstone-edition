@@ -49,5 +49,6 @@ class RestApiApplication extends Application
         ));
 
         $this->register(new PushServerProfilerServiceProvider());
+        $this->register(new \Sorien\Provider\DoctrineProfilerServiceProvider());
     }
 }

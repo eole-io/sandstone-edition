@@ -5,12 +5,44 @@ Build a real-time RestApi !
 
 It uses Silex and websockets.
 
-See *Technical stack* below to see what libraries are integrated in this stack.
+
+## Technical stack
+
+This fullstack integrates:
+
+ - [Sandstone](https://eole-io.github.io/sandstone/) (Silex with websockets)
+ - **Docker** environment to mount the whole application (RestApi, websocket server, MariaDB, PHPMyAdmin)
+ - **Doctrine ORM** and Doctrine commands
+ - **Symfony web profiler** for debugging RestApi requests and Push events
 
 
 ## Installation
 
-The installation and development requires **git**, **Docker** and **docker-compose**.
+Sandstone requires PHP 5.5+, ZMQ and php-zmq extension.
+But the fullstack also has a Docker installation, so you don't need PHP and ZMQ by this way.
+
+
+### Normal installation
+
+This requires PHP 5.5+, ZMQ and php-zmq extension.
+Check [Install ZMQ and php-zmq on Linux](https://eole-io.github.io/sandstone/install-zmq-php-linux.html).
+
+``` bash
+composer create-project eole/sanstone-fullstack
+cd sandstone-fullstack/
+```
+
+Then go to something like `http://localhost/sandstone-fullstack/www/index-dev.php/api/hello`
+
+Access to the **Silex console**:
+
+``` bash
+php bin/console
+```
+
+### Docker installation
+
+This installation requires **git**, **Docker** and **docker-compose**.
 
 ``` bash
 # Clone the repo
@@ -24,8 +56,7 @@ docker-compose up
 docker exec -ti sandstone-php /bin/bash -c "composer update"
 ```
 
-
-## Usage
+Then go to `http://localhost:8088/index-dev.php/api/hello`
 
 Docker runs the whole environment, the RestApi, the websocket server and PHPMyAdmin. You now have access to:
 
@@ -40,11 +71,11 @@ You can now start to create your RestApi endpoints and websocket topics.
 Access to the **Silex console**:
 
 ``` bash
-docker exec -ti sandstone-php /bin/bash -c "bin/console"
+docker exec -ti sandstone-php /bin/bash -c "php bin/console"
 ```
 
 
-### Docker default ports
+#### Docker default ports
 
 Once the environment mounted, Docker exposes these ports:
 
@@ -53,15 +84,400 @@ Once the environment mounted, Docker exposes these ports:
  - `8090:http` PHPMyAdmin instance
 
 
-## Technical stack
+## Routes
 
-This fullstack integrates:
+The fullstack provides the RestApi, the websocket server and a web profiler:
 
- - [Sandstone](https://eole-io.github.io/sandstone/) (Silex with websockets)
- - **Docker** environment to mount the whole application (RestApi, websocket server, PHPMyAdmin)
- - **Doctrine ORM** and Doctrine commands
- - **MariaDB** server with a PHPMyAdmin instance
- - **Symfony web profiler** for debugging RestApi requests and Push events
+ - `/index-dev.php/api/hello`: *hello world* route in **dev** mode.
+ - `/api/hello`: *hello world* route in **prod** mode.
+ - `/index-dev.php/_profiler`: Symfony web profiler (only dev mode).
+ - `/websocket-test.html`: A HTML page which connect to the websocket server and says hello on the chat (check your Javacript console).
+ - `http://localhost:25569/`: The websocket server (the port depends on what you set in your config).
+
+
+## Cookbook
+
+Once you have a running installation of Sandstone,
+you can start to build your real-time RestApi.
+
+That means creating API endpoints, websocket topics...
+
+
+### Creating an API endpoint
+
+As Sandstone extends Silex, just create a controller class and a method, then mount it with Silex.
+
+#### Controller class
+
+In **src/App/Controller**:
+``` php
+namespace App\Controller;
+
+use Symfony\Component\HttpFoundation\Response;
+use Alcalyn\SerializableApiResponse\ApiResponse;
+
+class HelloController
+{
+    /**
+     * @param string $name
+     *
+     * @return ApiResponse
+     */
+    public function getHello($name)
+    {
+        $result = [
+            'hello' => $name,
+        ];
+
+        return new ApiResponse($result, Response::HTTP_OK);
+    }
+}
+```
+
+> **Note**: The use of the `ApiResponse` allows to make your controller return a HTTP-agnostic object,
+> and is better when used with serializer
+> (see [Github alcalyn/serializable-api-response](https://github.com/alcalyn/serializable-api-response)).
+> Sandstone transform the `ApiResponse` to a Symfony `Response` only at the last time.
+
+#### Using a provider
+
+Rather than adding `$this->get('api/hello', 'app.controllers.hello:getHello');` directly in Application,
+it is better to create a Silex ControllerProvider.
+
+In **src/App/HelloProvider**:
+``` php
+namespace App\HelloProvider;
+
+use Silex\Api\ControllerProviderInterface;
+use Silex\Application;
+use App\Controller\HelloController;
+
+class HelloControllerProvider implements ControllerProviderInterface
+{
+    /**
+     * @param Application $app
+     */
+    public function connect(Application $app)
+    {
+        $controllers = $app['controllers_factory'];
+
+        $controllers->get('/hello/{name}', 'app.controllers.hello:getHello')->value('name', 'world');
+
+        return $controllers;
+    }
+}
+```
+
+Then register it in App/RestApiApplication:
+
+In **src/App/RestApiApplication**:
+``` php
+use App\HelloProvider\HelloControllerProvider;
+
+$this->mount('api', new HelloControllerProvider());
+```
+
+> **Note**: Resgister your controllers in `RestApiApplication`
+> to mount them only for the RestApi stack. Don't need them in the websocket stack.
+
+See the complete documentation about Silex routing:
+[http://silex.sensiolabs.org/doc/2.0/usage.html#routing](http://silex.sensiolabs.org/doc/2.0/usage.html#routing).
+
+
+### Creating a websocket topic
+
+A websocket topic is like a "category", or a "channel" of communication.
+It allows to listen to messages from a same source,
+without receive all messages from the websocket server.
+
+Technically, it also separate each topic in classes,
+then each topic has its own logic.
+
+Under Sandstone, a topic has a route and can be declared like a route.
+
+#### Creating the topic class
+
+In **src/App/Topic/ChatTopic.php**:
+``` php
+namespace App\Topic;
+
+use Ratchet\Wamp\WampConnection;
+use Eole\Sandstone\Websocket\Topic;
+
+class ChatTopic extends Topic
+{
+    /**
+     * Broadcast message to each subscribing client.
+     *
+     * {@InheritDoc}
+     */
+    public function onPublish(WampConnection $conn, $topic, $event)
+    {
+        $this->broadcast([
+            'message' => $event,
+        ]);
+    }
+}
+```
+
+#### Register the topic
+
+In **src/App/WebsocketApplication**:
+``` php
+use App\Topic\ChatTopic;
+
+$this->topic('chat/{channel}', function ($topicPattern) {
+    return new ChatTopic($topicPattern);
+});
+```
+
+Then you can now subscribe to `chat/general`, `chat/private`, `chat/whatever`, ...
+
+Sandstone `Topic` class extends `Ratchet\Wamp\Topic`,
+which is based on Wamp protocol.
+
+ - See the Wamp implementation on RatchetPHP: [http://socketo.me/docs/wamp](http://socketo.me/docs/wamp).
+ - Or see the Wamp protocol documentation: [http://wamp-proto.org/](http://wamp-proto.org/).
+
+
+### Send a Push event from RestApi to a websocket topic
+
+Sometimes you'll want to notify websocket clients when the RestApi state changes
+(a new resource has been PUT or POSTed, or a resource has been PATCHed...).
+
+Then this part is for you.
+
+The logic here is to dispatch an event from the controller behind i.e `postArticle`,
+then this event will be forwarded (i.e redisptached) over the `WebsocketApplication`.
+
+Then just listen this event from a topic, and do something like broadcast a message...
+
+#### Dispatch event from controller
+
+Inject somehow the serializer into the controller.
+
+Then, in **src/App/Controller/HelloController.php**:
+``` php
+public function getHello($name)
+{
+    $this->dispatcher->dispatch(HelloEvent::HELLO, new HelloEvent($name));
+}
+```
+
+#### Mark the event to be forwarded
+
+In **src/App/RestApiApplication**:
+``` php
+$app->forwardEventToPushServer(HelloEvent::HELLO);
+```
+
+> **Note**: This must be done only in RestApi stack.
+> If it's done in websocket stack, the event will be redispatched infinitely to itself!
+
+#### Listen the event from a topic
+
+Sandstone automatically subscribe topics
+that implements the `Symfony\Component\EventDispatcher\EventSubscriberInterface`.
+
+It will listen and receive the event
+that has been serialized/deserialized through the Push server,
+from the RestApi thread to the websocket server thread.
+
+In **src/App/Topic/ChatTopic**:
+
+``` php
+namespace App\Topic;
+
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Ratchet\Wamp\WampConnection;
+use Eole\Sandstone\Websocket\Topic;
+use App\Event\HelloEvent;
+
+class ChatTopic extends Topic implements EventSubscriberInterface
+{
+    /**
+     * Subscribe to article.created event.
+     *
+     * {@InheritDoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return [
+            HelloEvent::HELLO => 'onHello',
+        ];
+    }
+
+    /**
+     * Article created listener.
+     *
+     * @param HelloEvent $event
+     */
+    public function onHello(HelloEvent $event)
+    {
+        $this->broadcast([
+            'message' => 'Someone called api/hello. Hello '.$event->getName(),
+        ]);
+    }
+}
+```
+
+Up to you to create a `HelloEvent` class, create serialization metadata for it...
+
+
+### Doctrine
+
+Sandstone fullstack integrates Doctrine.
+That means that:
+
+ - Doctrine DBAL and ORM are installed,
+ - you can use entities, annotations or yaml mapping, the `orm:schema-tool`...
+ - Doctrine commands are available under `php bin/console`
+ - Entities serialization is well handled (fixes relations infinite loops). See [serializer-doctrine-proxies](https://github.com/alcalyn/serializer-doctrine-proxies).
+
+#### Creating an entity
+
+In **src/App/Entity/Article.php**:
+
+``` php
+namespace App\Entity;
+
+/**
+ * @Entity
+ */
+class Article
+{
+    /**
+     * @var int
+     *
+     * @Id
+     * @Column(type="integer")
+     * @GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @Column(type="string")
+     */
+    private $title;
+
+    /**
+     * @var \DateTime
+     *
+     * @Column(type="datetime")
+     */
+    private $dateCreated;
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return self
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return self
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->dateCreated;
+    }
+
+    /**
+     * @param \DateTime $dateCreated
+     *
+     * @return self
+     */
+    public function setDateCreated(\DateTime $dateCreated)
+    {
+        $this->dateCreated = $dateCreated;
+
+        return $this;
+    }
+}
+```
+
+#### Serialization metadata
+
+If your entity is meant to be serialized, which happens in any of these cases:
+
+ - rendered in json (or xml, yml...) to the RestApi user
+ - sent to the websocket server from the rest api (forwarded)
+
+In **src/App/Serializer/App.Entity.Article.yml**:
+``` yml
+App\Entity\Article:
+    exclusion_policy: NONE
+    properties:
+        id:
+            type: integer
+        title:
+            type: string
+        dateCreated:
+            type: DateTime
+```
+
+See the documentation of JMS Serializer:
+
+ - Reference for available **types**: [http://jmsyst.com/libs/serializer/master/reference/annotations#type](http://jmsyst.com/libs/serializer/master/reference/annotations#type).
+ - Yaml reference: [http://jmsyst.com/libs/serializer/master/reference/yml_reference](http://jmsyst.com/libs/serializer/master/reference/yml_reference).
+
+#### Updating the database
+
+Use the Doctrine command:
+
+``` bash
+php bin/console orm:schema-tool:update --force
+```
+
+See all Doctrine commands:
+[http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/tools.html](http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/tools.html).
+
+
+### Debugging with Symfony web profiler
+
+[Silex web profiler](https://github.com/silexphp/Silex-WebProfiler) is already integrated in Sandstone fullstack.
+
+It is available under `/index-dev.php/_profiler`.
+
+It allows you to debug RestApi requests: exceptions, Doctrine queries, called listeners...
+
+Sandstone provides also a [Push message debugger](https://github.com/eole-io/sandstone/releases/tag/1.1.0) (since version `1.1`)
+to check which messages has been sent to the websocket stack.
 
 
 ## License
