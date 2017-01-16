@@ -22,6 +22,7 @@ class Application extends BaseApplication
         $this->registerWebsocketServer();
         $this->registerPushServer();
         $this->registerApiResponse();
+        $this->registerControllerAnnotations();
         $this->registerServices();
         $this->registerDoctrineMappings();
         $this->registerDoctrine();
@@ -85,6 +86,15 @@ class Application extends BaseApplication
         $this->on(KernelEvents::VIEW, function ($event) {
             $this['acme.listener.api_response_filter']->onKernelView($event);
         });
+    }
+
+    private function registerControllerAnnotations()
+    {
+        $this->register(new \DDesrosiers\SilexAnnotations\AnnotationServiceProvider(), [
+            'annot.cache' => new \Doctrine\Common\Cache\FilesystemCache($this['project.root'].'/var/cache/annotations'),
+            'annot.controllerDir' => $this['project.root'].'/src/App/Controller',
+            'annot.controllerNamespace' => 'App\\Controller\\',
+        ]);
     }
 
     private function registerServices()

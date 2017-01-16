@@ -6,6 +6,8 @@
     "require": {
         "eole/sandstone": "1.x",
         "alcalyn/serializable-api-response": "~1.0",
+        "doctrine/cache": "1.x",
+        "ddesrosiers/silex-annotation-provider": "dev-master",
         "dflydev/doctrine-orm-service-provider": "2.x"
     },
     "require-dev": {
