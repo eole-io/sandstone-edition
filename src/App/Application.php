@@ -47,7 +47,7 @@ class Application extends BaseApplication
 
         // Register serializer metadata
         $this['serializer.builder']
-            ->addMetadataDir($this['project.root'].'/src/App/Serializer')
+            ->addMetadataDir($this['project.root'].'/src/App/Resources/serializer')
             ->setCacheDir($this['project.root'].'/var/cache/serializer')
         ;
     }
