@@ -14,6 +14,7 @@ This fullstack integrates:
  - **Docker** environment to mount the whole application (RestApi, websocket server, MariaDB, PHPMyAdmin)
  - **Doctrine ORM** and Doctrine commands
  - **Symfony web profiler** for debugging RestApi requests and Push events
+ - [Silex annotations](https://github.com/danadesrosiers/silex-annotation-provider) for controllers and routing annotations
 
 
 ## Installation
@@ -107,18 +108,45 @@ That means creating API endpoints, websocket topics...
 
 As Sandstone extends Silex, just create a controller class and a method, then mount it with Silex.
 
+Also, this fullstack allows to use annotations for routing.
+
 #### Controller class
 
 In **src/App/Controller**:
 ``` php
 namespace App\Controller;
 
+use Pimple\Container;
 use Symfony\Component\HttpFoundation\Response;
+use DDesrosiers\SilexAnnotations\Annotations as SLX;
 use Alcalyn\SerializableApiResponse\ApiResponse;
 
+/**
+ * @SLX\Controller(prefix="/api")
+ */
 class HelloController
 {
     /**
+     * @var Container
+     */
+    private $container;
+
+    /**
+     * @param Container $container
+     */
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * Test endpoint which returns a hello world.
+     *
+     * @SLX\Route(
+     *      @SLX\Request(method="GET", uri="hello/{name}"),
+     *      @SLX\Value(variable="name", default="world")
+     * )
+     *
      * @param string $name
      *
      * @return ApiResponse
@@ -134,54 +162,15 @@ class HelloController
 }
 ```
 
-> **Note**: The use of the `ApiResponse` allows to make your controller return a HTTP-agnostic object,
+> **Note**: Using `ApiResponse` allows to make your controller return a HTTP-agnostic object,
 > and is better when used with serializer
 > (see [Github alcalyn/serializable-api-response](https://github.com/alcalyn/serializable-api-response)).
-> Sandstone transform the `ApiResponse` to a Symfony `Response` only at the last time.
+> Sandstone transform the `ApiResponse` to a Symfony `Response` only at the last time (after serialization).
 
-#### Using a provider
+Related documentation:
 
-Rather than adding `$this->get('api/hello', 'app.controllers.hello:getHello');` directly in Application,
-it is better to create a Silex ControllerProvider.
-
-In **src/App/HelloProvider**:
-``` php
-namespace App\HelloProvider;
-
-use Silex\Api\ControllerProviderInterface;
-use Silex\Application;
-use App\Controller\HelloController;
-
-class HelloControllerProvider implements ControllerProviderInterface
-{
-    /**
-     * @param Application $app
-     */
-    public function connect(Application $app)
-    {
-        $controllers = $app['controllers_factory'];
-
-        $controllers->get('/hello/{name}', 'app.controllers.hello:getHello')->value('name', 'world');
-
-        return $controllers;
-    }
-}
-```
-
-Then register it in App/RestApiApplication:
-
-In **src/App/RestApiApplication**:
-``` php
-use App\HelloProvider\HelloControllerProvider;
-
-$this->mount('api', new HelloControllerProvider());
-```
-
-> **Note**: Resgister your controllers in `RestApiApplication`
-> to mount them only for the RestApi stack. Don't need them in the websocket stack.
-
-See the complete documentation about Silex routing:
-[http://silex.sensiolabs.org/doc/2.0/usage.html#routing](http://silex.sensiolabs.org/doc/2.0/usage.html#routing).
+ - [danadesrosiers/Silex annotations](https://github.com/danadesrosiers/silex-annotation-provider)
+ - [Silex routing](http://silex.sensiolabs.org/doc/2.0/usage.html#routing)
 
 
 ### Creating a websocket topic
@@ -369,65 +358,7 @@ class Article
      */
     private $dateCreated;
 
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return self
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    /**
-     * @param string $title
-     *
-     * @return self
-     */
-    public function setTitle($title)
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateCreated()
-    {
-        return $this->dateCreated;
-    }
-
-    /**
-     * @param \DateTime $dateCreated
-     *
-     * @return self
-     */
-    public function setDateCreated(\DateTime $dateCreated)
-    {
-        $this->dateCreated = $dateCreated;
-
-        return $this;
-    }
+    // getters and setters...
 }
 ```
 

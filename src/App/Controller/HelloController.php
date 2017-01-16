@@ -2,28 +2,37 @@
 
 namespace App\Controller;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Pimple\Container;
 use Symfony\Component\HttpFoundation\Response;
+use DDesrosiers\SilexAnnotations\Annotations as SLX;
 use Alcalyn\SerializableApiResponse\ApiResponse;
 use App\Event\HelloEvent;
 
+/**
+ * @SLX\Controller(prefix="/api")
+ */
 class HelloController
 {
     /**
-     * @var EventDispatcherInterface
+     * @var Container
      */
-    private $dispatcher;
+    private $container;
 
     /**
-     * @param EventDispatcherInterface $dispatcher
+     * @param Container $container
      */
-    public function __construct(EventDispatcherInterface $dispatcher)
+    public function __construct(Container $container)
     {
-        $this->dispatcher = $dispatcher;
+        $this->container = $container;
     }
 
     /**
      * Test endpoint which returns a hello world.
+     *
+     * @SLX\Route(
+     *      @SLX\Request(method="GET", uri="hello/{name}"),
+     *      @SLX\Value(variable="name", default="world")
+     * )
      *
      * @param string $name
      *
@@ -35,7 +44,7 @@ class HelloController
             'hello' => $name,
         ];
 
-        $this->dispatcher->dispatch(HelloEvent::HELLO, new HelloEvent($name));
+        $this->container['dispatcher']->dispatch(HelloEvent::HELLO, new HelloEvent($name));
 
         return new ApiResponse($result, Response::HTTP_OK);
     }

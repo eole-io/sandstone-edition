@@ -4,7 +4,7 @@ namespace App;
 
 use Silex\Provider;
 use Eole\Sandstone\Push\Debug\PushServerProfilerServiceProvider;
-use App\HelloProvider\HelloControllerProvider;
+use App\Event\HelloEvent;
 
 class RestApiApplication extends Application
 {
@@ -23,10 +23,7 @@ class RestApiApplication extends Application
             $this->registerWebProfiler();
         }
 
-        $helloControllerProvider = new HelloControllerProvider();
-
-        $this->register($helloControllerProvider);
-        $this->mount('api', $helloControllerProvider);
+        $this->forwardEventToPushServer(HelloEvent::HELLO);
     }
 
     private function registerDefaultProviders()
