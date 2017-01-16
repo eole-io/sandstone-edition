@@ -4,3 +4,4 @@ var/logs/*
 !var/cache/.gitkeep
 !var/logs/.gitkeep
 composer.lock
+docker-compose.override.yml
