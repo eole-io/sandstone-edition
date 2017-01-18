@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Alcalyn\SerializableApiResponse\ApiResponseFilter;
 use Eole\Sandstone\Application as BaseApplication;
@@ -46,6 +48,31 @@ class Application extends BaseApplication
     {
         $this->register(new \JDesrosiers\Silex\Provider\CorsServiceProvider(), $this['environment']['cors']);
         $this->after($this['cors']);
+
+        $this->on(KernelEvents::REQUEST, function (GetResponseEvent $event) {
+            $request = $event->getRequest();
+            $isPreflightRequest =
+                $request->getMethod() === 'OPTIONS' &&
+                $request->headers->has("Access-Control-Request-Method")
+            ;
+
+            if ($isPreflightRequest) {
+                $response = new Response();
+
+                $response->setStatusCode(Response::HTTP_OK);
+                $response->headers->add([
+                    'Access-Control-Allow-Headers' => $request->headers->get('Access-Control-Request-Headers'),
+                    'Access-Control-Allow-Methods' => !is_null($this['cors.allowMethods']) ? $this['cors.allowMethods'] : $request->headers->get('Access-Control-Request-Method'),
+                    'Access-Control-Max-Age' => $this['cors.maxAge'],
+                    'Access-Control-Allow-Origin' => $this['cors.allowOrigin'],
+                    'Access-Control-Allow-Credentials' => true === $this['cors.allowCredentials'] ? 'true' : null,
+                ]);
+
+                $event->setResponse($response);
+            }
+
+            return null;
+        }, 128);
     }
 
     private function registerSerializer()
