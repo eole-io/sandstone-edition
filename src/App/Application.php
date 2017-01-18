@@ -18,6 +18,7 @@ class Application extends BaseApplication
         parent::__construct($values);
 
         $this->loadEnvironment();
+        $this->registerCors();
         $this->registerSerializer();
         $this->registerWebsocketServer();
         $this->registerPushServer();
@@ -39,6 +40,12 @@ class Application extends BaseApplication
         }
 
         $this['environment'] = require $this['project.root'].'/config/environment-'.$this['env'].'.php';
+    }
+
+    private function registerCors()
+    {
+        $this->register(new \JDesrosiers\Silex\Provider\CorsServiceProvider(), $this['environment']['cors']);
+        $this->after($this['cors']);
     }
 
     private function registerSerializer()

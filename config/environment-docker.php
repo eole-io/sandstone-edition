@@ -28,4 +28,7 @@ return [
             'port' => 5555,
         ],
     ],
+    'cors' => [
+        'cors.allowOrigin' => '*',
+    ],
 ];

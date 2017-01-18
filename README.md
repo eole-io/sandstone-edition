@@ -411,6 +411,38 @@ Sandstone provides also a [Push message debugger](https://github.com/eole-io/san
 to check which messages has been sent to the websocket stack.
 
 
+### Cross origin
+
+If your front-end application is not hosted under the same domain name,
+you probably get cross origin errors when trying to query your RestApi using Ajax.
+
+This is a server security against XSS attacks.
+
+To fix this issue, you have to configure your RestApi server
+to let him send the response to a precise domain name.
+
+The fullstack integrates [jdesrosiers/silex-cors-provider](https://github.com/jdesrosiers/silex-cors-provider),
+so you just have to configure it:
+
+In **config/environment.php**, only serve `localhost` (if your front-end application is on `localhost`):
+``` php
+return [
+    'cors' => [
+        'cors.allowOrigin' => 'http://localhost',
+    ],
+];
+```
+
+or to server **All clients**:
+``` php
+return [
+    'cors' => [
+        'cors.allowOrigin' => '*',
+    ],
+];
+```
+
+
 ## License
 
 This library is under [MIT License](LICENSE).
