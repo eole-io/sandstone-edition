@@ -209,8 +209,37 @@ Then you can now subscribe to `chat/general`, `chat/private`, `chat/whatever`, .
 Sandstone `Topic` class extends `Ratchet\Wamp\Topic`,
 which is based on Wamp protocol.
 
+Note that you can use all Silex route configuration like:
+
+``` php
+$this
+    ->topic('chat/{channel}', function ($topicPattern) {
+        return new ChatTopic($topicPattern);
+    })
+    ->value('channel', 'general')                   // Set a default channel name in case someone subscribes to `chat`
+    ->assert('channel', '[a-z]')                    // Add constraint on channel name, only lowercases
+    ->convert('channel', function () { /* ... */ }) // Add a converter on channel name
+;
+```
+
+> **Note** also that you can't use `->method('get')` or `->requireHttps()` for a topic route ;)
+
+#### Retrieve route arguments from topic name
+
+In case your topic name is something like `chat/{channel}`
+and you need to pass the `{channel}` argument to your Topic class:
+
+``` php
+$this->topic('chat/{channel}', function ($topicPattern, $arguments) {
+    $channelName = $arguments['channel'];
+
+    return new ChatTopic($topicPattern, $channelName);
+});
+```
+
 *Related documentation*:
 
+ - Silex routing: [http://silex.sensiolabs.org/doc/2.0/usage.html](http://silex.sensiolabs.org/doc/2.0/usage.html).
  - Wamp protocol implementation on RatchetPHP: [http://socketo.me/docs/wamp](http://socketo.me/docs/wamp).
  - Wamp protocol: [http://wamp-proto.org/](http://wamp-proto.org/).
 
