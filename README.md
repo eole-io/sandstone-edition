@@ -45,16 +45,25 @@ php bin/console
 
 This installation requires **git**, **Docker** and **docker-compose**.
 
+*(Run docker commands one by one)*
+
 ``` bash
 # Clone the repo
 git clone https://github.com/eole-io/sandstone-fullstack.git
 cd sandstone-fullstack/
 
-# Mount the environment
-docker-compose up
+# Mount a minimal environment for installation
+docker-compose up --no-deps -d php-fpm database
 
 # Install composer dependencies
 docker exec -ti sandstone-php /bin/bash -c "composer update"
+
+# Install database
+docker exec -ti sandstone-database /bin/bash -c "mysql -u root -proot -e 'create database sandstone;'"
+docker exec -ti sandstone-php /bin/bash -c "bin/console orm:schema-tool:create"
+
+# Mount the rest of the environment
+docker-compose up -d
 ```
 
 Then go to `http://localhost:8088/index-dev.php/api/hello`
@@ -195,13 +204,16 @@ class ChatTopic extends Topic
 
 #### Register the topic
 
-In **src/App/WebsocketApplication**:
+In **app/WebsocketApplication**:
 ``` php
 use App\Topic\ChatTopic;
 
-$this->topic('chat/{channel}', function ($topicPattern) {
-    return new ChatTopic($topicPattern);
-});
+private function registerUserProviders()
+{
+    $this->topic('chat/{channel}', function ($topicPattern) {
+        return new ChatTopic($topicPattern);
+    });
+}
 ```
 
 Then you can now subscribe to `chat/general`, `chat/private`, `chat/whatever`, ...
@@ -271,9 +283,14 @@ public function getHello($name)
 
 #### Mark the event to be forwarded
 
-In **src/App/RestApiApplication**:
+In **app/RestApiApplication**:
 ``` php
-$app->forwardEventToPushServer(HelloEvent::HELLO);
+use App\Event\HelloEvent;
+
+private function registerUserProviders()
+{
+    $app->forwardEventToPushServer(HelloEvent::HELLO);
+}
 ```
 
 > **Note**: This must be done only in RestApi stack.
