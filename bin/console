@@ -3,12 +3,12 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-$app = new App\Application(array(
+$app = new Application(array(
     'project.root' => dirname(__DIR__),
     'env' => 'docker',
     'debug' => true,
 ));
 
-$console = new App\Console($app);
+$console = new Console($app);
 
 $console->run();

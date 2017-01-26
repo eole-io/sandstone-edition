@@ -8,7 +8,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Silex\Application;
 
-$restApi = new App\RestApiApplication(array(
+$restApi = new RestApiApplication(array(
     'project.root' => dirname(__DIR__),
     'env' => 'docker',
     'debug' => true,

@@ -1,13 +1,11 @@
 <?php
 
-namespace App;
-
 use Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper;
 use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Application as ConsoleApplication;
-use App\Application as SilexApplication;
+use Application as SilexApplication;
 
 class Console extends ConsoleApplication
 {
