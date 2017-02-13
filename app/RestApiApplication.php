@@ -18,6 +18,8 @@ class RestApiApplication extends Application
             'http_cache.cache_dir' => $this['project.root'].'/var/cache/http-cache',
         ));
 
+        $this->register(new Provider\RestApi\ControllerAnnotationsProvider());
+
         if ($this['debug']) {
             $this->register(new Provider\RestApi\WebProfilerProvider());
         }

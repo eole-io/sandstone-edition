@@ -17,7 +17,6 @@ class Application extends BaseApplication
         $this->register(new Provider\CorsProvider());
         $this->register(new Provider\SerializerProvider());
         $this->register(new Provider\ApiResponseProvider());
-        $this->register(new Provider\ControllerAnnotationsProvider());
         $this->register(new Provider\WebsocketServerProvider());
         $this->register(new Provider\PushProvider());
         $this->register(new Provider\ServiceProvider());

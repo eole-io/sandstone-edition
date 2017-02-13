@@ -1,6 +1,6 @@
 <?php
 
-namespace Provider;
+namespace Provider\RestApi;
 
 use Doctrine\Common\Cache\FilesystemCache;
 use Pimple\ServiceProviderInterface;
