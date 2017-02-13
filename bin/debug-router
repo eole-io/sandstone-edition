@@ -14,6 +14,7 @@ $restApi = new RestApiApplication(array(
     'debug' => true,
 ));
 
+$restApi->boot();
 $restApi->flush();
 
 displayRoutes($restApi);
