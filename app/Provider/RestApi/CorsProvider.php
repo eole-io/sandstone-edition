@@ -1,6 +1,6 @@
 <?php
 
-namespace Provider;
+namespace Provider\RestApi;
 
 use Pimple\ServiceProviderInterface;
 use Pimple\Container;

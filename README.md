@@ -66,15 +66,18 @@ docker exec -ti sandstone-php /bin/bash -c "bin/console orm:schema-tool:create"
 docker-compose up -d
 ```
 
-Then go to `http://localhost:8088/index-dev.php/api/hello`
+Check your installation by going to http://localhost:8088/index-dev.php/api/hello
+
+> **Note**: Sometimes you'll need to do a `chown -R {your_user}:{your_group} .`
+> or `chmod -R 777 var/*` to make it work.
 
 Docker runs the whole environment, the RestApi, the websocket server and PHPMyAdmin. You now have access to:
 
- - `http://localhost:8088/index-dev.php/api/hello`: *hello world* route in **dev** mode.
- - `http://localhost:8088/api/hello`: *hello world* route in **prod** mode.
- - `http://localhost:8088/index-dev.php/_profiler`: Symfony web profiler (only dev mode).
- - `http://localhost:8088/websocket-test.html`: A HTML page which connect to the websocket server and says hello on the chat (check your Javacript console).
- - `http://localhost:8090/`: PHPMyAdmin.
+ - http://localhost:8088/index-dev.php/api/hello *hello world* route in **dev** mode.
+ - http://localhost:8088/api/hello *hello world* route in **prod** mode.
+ - http://localhost:8088/index-dev.php/_profiler/ Symfony web profiler (only dev mode).
+ - http://localhost:8088/websocket-test.html A HTML page which connect to the websocket server and says hello on the chat (check your Javacript console).
+ - http://localhost:8090/ PHPMyAdmin.
 
 You can now start to create your RestApi endpoints and websocket topics.
 
@@ -87,7 +90,7 @@ docker exec -ti sandstone-php /bin/bash -c "php bin/console"
 
 #### Docker default ports
 
-Once the environment mounted, Docker exposes these ports:
+Once the environment mounted, Docker exposes by default these ports:
 
  - `8088:http` Web server for the RestApi (nginx)
  - `8089:ws` Websocket server
@@ -100,9 +103,9 @@ The fullstack provides the RestApi, the websocket server and a web profiler:
 
  - `/index-dev.php/api/hello`: *hello world* route in **dev** mode.
  - `/api/hello`: *hello world* route in **prod** mode.
- - `/index-dev.php/_profiler`: Symfony web profiler (only dev mode).
+ - `/index-dev.php/_profiler/`: Symfony web profiler (only dev mode).
  - `/websocket-test.html`: A HTML page which connect to the websocket server and says hello on the chat (check your Javacript console).
- - `http://localhost:25569/`: The websocket server (the port depends on what you set in your config).
+ - `http://localhost:8089/`: The websocket server (the port depends on what you set in your config).
 
 
 ## Cookbook

@@ -15,7 +15,7 @@ services:
         build: docker/php-fpm
         command: php bin/websocket-server
         ports:
-            - 8089:25569
+            - 8089:8089
         volumes:
             - .:/var/www/html/
 

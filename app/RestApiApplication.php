@@ -19,6 +19,7 @@ class RestApiApplication extends Application
         ));
 
         $this->register(new Provider\RestApi\ControllerAnnotationsProvider());
+        $this->register(new Provider\RestApi\CorsProvider());
 
         if ($this['debug']) {
             $this->register(new Provider\RestApi\WebProfilerProvider());

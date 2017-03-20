@@ -14,7 +14,6 @@ class Application extends BaseApplication
         parent::__construct($values);
 
         $this->register(new Provider\EnvironmentProvider());
-        $this->register(new Provider\CorsProvider());
         $this->register(new Provider\SerializerProvider());
         $this->register(new Provider\ApiResponseProvider());
         $this->register(new Provider\WebsocketServerProvider());

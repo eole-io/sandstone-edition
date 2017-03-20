@@ -17,7 +17,7 @@ return [
     'websocket' => [
         'server' => [
             'bind' => '0.0.0.0',
-            'port' => 25569,
+            'port' => 8089,
         ],
     ],
     'push' => [

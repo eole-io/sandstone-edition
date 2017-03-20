@@ -10,7 +10,7 @@ use Silex\Application;
 
 $restApi = new RestApiApplication(array(
     'project.root' => dirname(__DIR__),
-    'env' => 'docker',
+    'env' => 'dev',
     'debug' => true,
 ));
 

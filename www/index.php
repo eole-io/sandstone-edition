@@ -6,7 +6,7 @@ require_once '../vendor/autoload.php';
 
 $app = new RestApiApplication([
     'project.root' => dirname(__DIR__),
-    'env' => 'docker',
+    'env' => 'prod',
 ]);
 
 $app['http_cache']->run();
