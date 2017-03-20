@@ -20,64 +20,39 @@ This fullstack integrates:
 ## Installation
 
 Sandstone requires PHP 5.5+, ZMQ and php-zmq extension.
-But the fullstack also has a Docker installation, so you don't need PHP and ZMQ by this way.
 
+But the fullstack also has a Docker installation,
+so you don't need to install PHP, ZMQ, php-zmq, mysql... using Docker.
 
-### Normal installation
-
-This requires PHP 5.5+, ZMQ and php-zmq extension.
-Check [Install ZMQ and php-zmq on Linux](https://eole-io.github.io/sandstone/install-zmq-php-linux.html).
-
-``` bash
-composer create-project eole/sanstone-fullstack
-cd sandstone-fullstack/
-```
-
-Then go to something like `http://localhost/sandstone-fullstack/www/index-dev.php/api/hello`
-
-Access to the **Silex console**:
-
-``` bash
-php bin/console
-```
 
 ### Docker installation
 
-This installation requires **git**, **Docker** and **docker-compose**.
-
-*(Run docker commands one by one)*
+This installation requires **make**, **Docker** and **docker-compose**.
 
 ``` bash
-# Clone the repo
-git clone https://github.com/eole-io/sandstone-fullstack.git
-cd sandstone-fullstack/
+# Install a new Sandstone project
+curl -L https://github.com/eole-io/sandstone-fullstack/archive/dev.tar.gz | tar xz
+cd sandstone-fullstack-dev/
 
-# Mount a minimal environment for installation
-docker-compose up --no-deps -d php-fpm database
-
-# Install composer dependencies
-docker exec -ti sandstone-php /bin/bash -c "composer update"
-
-# Install database
-docker exec -ti sandstone-database /bin/bash -c "mysql -u root -proot -e 'create database sandstone;'"
-docker exec -ti sandstone-php /bin/bash -c "bin/console orm:schema-tool:create"
-
-# Mount the rest of the environment
-docker-compose up -d
+# Install and mount environment
+make
 ```
 
-Check your installation by going to http://localhost:8088/index-dev.php/api/hello
+> **Note**: Sometimes you'll need to do either a
+> `chown -R {your_user}:{your_group} .`
+> or a
+> `chmod -R 777 var/*`
+> to make it work.
 
-> **Note**: Sometimes you'll need to do a `chown -R {your_user}:{your_group} .`
-> or `chmod -R 777 var/*` to make it work.
+Check your installation by going to http://0.0.0.0:8480/index-dev.php/api/hello
 
 Docker runs the whole environment, the RestApi, the websocket server and PHPMyAdmin. You now have access to:
 
- - http://localhost:8088/index-dev.php/api/hello *hello world* route in **dev** mode.
- - http://localhost:8088/api/hello *hello world* route in **prod** mode.
- - http://localhost:8088/index-dev.php/_profiler/ Symfony web profiler (only dev mode).
- - http://localhost:8088/websocket-test.html A HTML page which connect to the websocket server and says hello on the chat (check your Javacript console).
- - http://localhost:8090/ PHPMyAdmin.
+ - http://0.0.0.0:8480/index-dev.php/api/hello *hello world* route in **dev** mode.
+ - http://0.0.0.0:8480/api/hello *hello world* route in **prod** mode.
+ - http://0.0.0.0:8480/index-dev.php/_profiler/ Symfony web profiler (only dev mode).
+ - http://0.0.0.0:8480/websocket-test.html A HTML page which connect to the websocket server and says hello on the chat (check your Javacript console).
+ - http://0.0.0.0:8481/ PHPMyAdmin.
 
 You can now start to create your RestApi endpoints and websocket topics.
 
@@ -87,25 +62,36 @@ Access to the **Silex console**:
 docker exec -ti sandstone-php /bin/bash -c "php bin/console"
 ```
 
-
 #### Docker default ports
 
 Once the environment mounted, Docker exposes by default these ports:
 
- - `8088:http` Web server for the RestApi (nginx)
- - `8089:ws` Websocket server
- - `8090:http` PHPMyAdmin instance
+ - `8480:http` Web server for the RestApi (nginx)
+ - `8481:http` PHPMyAdmin instance
+ - `8482:ws` Websocket server
 
 
-## Routes
+### Normal installation
 
-The fullstack provides the RestApi, the websocket server and a web profiler:
+This requires PHP 5.5+, ZMQ, php-zmq extension, composer, and a database.
 
- - `/index-dev.php/api/hello`: *hello world* route in **dev** mode.
- - `/api/hello`: *hello world* route in **prod** mode.
- - `/index-dev.php/_profiler/`: Symfony web profiler (only dev mode).
- - `/websocket-test.html`: A HTML page which connect to the websocket server and says hello on the chat (check your Javacript console).
- - `http://localhost:8089/`: The websocket server (the port depends on what you set in your config).
+Check [Install ZMQ and php-zmq on Linux](https://eole-io.github.io/sandstone/install-zmq-php-linux.html).
+
+``` bash
+composer create-project eole/sanstone-fullstack
+cd sandstone-fullstack/
+```
+
+Install and configure your environment in `config/environment-dev.php`.
+
+Then go to something like `http://localhost/sandstone-fullstack/www/index-dev.php/api/hello`
+to check your install.
+
+Access to the **Silex console**:
+
+``` bash
+php bin/console
+```
 
 
 ## Cookbook

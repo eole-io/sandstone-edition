@@ -4,7 +4,7 @@ services:
     rest-api:
         image: nginx:latest
         ports:
-            - 8088:80
+            - 8480:80
         volumes:
             - .:/var/www/html/
             - ./docker/rest-api/nginx.conf:/etc/nginx/conf.d/default.conf
@@ -15,7 +15,7 @@ services:
         build: docker/php-fpm
         command: php bin/websocket-server
         ports:
-            - 8089:8089
+            - 8482:8482
         volumes:
             - .:/var/www/html/
 
@@ -40,4 +40,4 @@ services:
             MYSQL_ROOT_PASSWORD: root
             PMA_HOST: database
         ports:
-            - 8090:80
+            - 8481:80
