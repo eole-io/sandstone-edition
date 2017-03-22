@@ -77,14 +77,24 @@ This requires PHP 5.5+, ZMQ, php-zmq extension, composer, and a database.
 
 Check [Install ZMQ and php-zmq on Linux](https://eole-io.github.io/sandstone/install-zmq-php-linux.html).
 
+#### Install a new Sandstone project
+
 ``` bash
 composer create-project eole/sanstone-fullstack
 cd sandstone-fullstack/
 ```
 
-Install and configure your environment in `config/environment-dev.php`.
+ - Create a database for your project.
+ - Configure your environment in `config/environment-dev.php`.
+ - Run `php bin/console orm:schema-tool:create` to initialize the database schema.
 
-Then go to something like `http://localhost/sandstone-fullstack/www/index-dev.php/api/hello`
+Run the websocket server with:
+
+``` bash
+php bin\websocket-server
+```
+
+Go to something like `http://localhost/sandstone-fullstack/www/index-dev.php/api/hello`
 to check your install.
 
 Access to the **Silex console**:
