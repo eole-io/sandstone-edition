@@ -86,7 +86,7 @@ You may need to [install ZMQ and php-zmq on Linux](https://eole-io.github.io/san
 #### Install a new Sandstone project
 
 ``` bash
-composer create-project eole/sanstone-edition
+composer create-project eole/sandstone-edition
 cd sandstone-edition/
 ```
 
