@@ -4,7 +4,7 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "eole/sandstone": "1.x",
+        "eole/sandstone": "^1.2.3",
         "jdesrosiers/silex-cors-provider": "^1.4.0",
         "alcalyn/serializable-api-response": "~1.0",
         "doctrine/cache": "1.x",

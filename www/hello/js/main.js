@@ -7,15 +7,24 @@ var websocketSession = null;
  */
 function onSessionOpen(session) {
     websocketSession = session;
+    var event = new CustomEvent('websocketSessionReady', {
+        websocketSession: session,
+        bubbles: true,
+        cancelable: true
+    });
+    dispatchEvent(event);
 
     setIndicator('websocket-connection', 'success', 'Connected to <code>'+session._wsuri+'</code>');
 
-    // Subscribe to 'chat/general' topic
+    // Subscribe to 'chat/general' topic to display messages on chat output
     session.subscribe('chat', function (topic, event) {
         console.log('message received', topic, event);
 
         setIndicator('chat-topic', 'success', 'Subscribed to chat topic.');
-        addToChat(event.message);
+
+        if (event.message) {
+            addToChat(event.message);
+        }
     });
 
     // Publish a message to 'chat/general' topic
@@ -45,7 +54,18 @@ $.get(Environment.restApiUrl+'/hello')
         setIndicator('rest-api', 'success', 'Rest Api answered with <code>'+metadata.status+' '+metadata.statusText+'<br />'+metadata.responseText+'</code>');
     })
     .fail(function () {
-        console.log(arguments);
+        console.warn('Rest Api fail', arguments);
         setIndicator('rest-api', 'danger', 'Error when trying to call <code>GET /api/hello</code>.');
     })
 ;
+
+// Testing Push notifications
+addEventListener('websocketSessionReady', function (e) {
+    e.websocketSession.subscribe('chat', function (topic, event) {
+        if (event.hello && 'push-1-2-1-2-test' === event.hello) {
+            setIndicator('push', 'success', 'Push notification received.');
+        }
+    });
+});
+
+$.get(Environment.restApiUrl+'/hello/push-1-2-1-2-test');
