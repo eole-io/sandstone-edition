@@ -1,0 +1,181 @@
+<html>
+    <head>
+        <title>Sandstone diagnostic</title>
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/all.css">
+    </head>
+    <body>
+        <div class="container-fluid">
+            <h1>Sandstone diagnostic</h1>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <h2>
+                        <span class="glyphicon glyphicon-comment small" aria-hidden="true"></span>
+                        Chat
+                    </h2>
+
+                    <div id="chat-output" class="well">
+                    </div>
+
+                    <form id="chat-form">
+                        <div class="input-group">
+                            <input id="chat-input" type="text" class="form-control" placeholder="Say something...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit">
+                                    <span class="glyphicon glyphicon-send" aria-hidden="true"></span>
+                                    Send
+                                </button>
+                            </span>
+                        </div>
+                    </form>
+
+                    <h2>
+                        <span class="glyphicon glyphicon-question-sign small" aria-hidden="true"></span>
+                        What next ?
+                    </h2>
+
+                    <p>
+                        If the diagnostic is good, your are now ready to build
+                        your real-time Rest Api.
+                    </p>
+
+                    <p>
+                        You can read <a href="https://github.com/eole-io/sandstone-edition#cookbook">the Sandstone cookbook</a>:
+                    </p>
+
+                    <ul>
+                        <li>
+                            <a href="https://github.com/eole-io/sandstone-edition#creating-an-api-endpoint">
+                                Creating an API endpoint
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/eole-io/sandstone-edition#creating-a-websocket-topic">
+                                Creating a websocket topic
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/eole-io/sandstone-edition#send-a-push-event-from-restapi-to-a-websocket-topic">
+                                Send a Push event from RestApi to a websocket topic
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/eole-io/sandstone-edition#doctrine">
+                                Doctrine integration
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/eole-io/sandstone-edition#debugging-with-symfony-web-profiler">
+                                Debugging with Symfony web profiler
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/eole-io/sandstone-edition#cross-origin">
+                                Cross origin
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-sm-6">
+                    <h2>
+                        <span class="glyphicon glyphicon-scale small" aria-hidden="true"></span>
+                        Diagnostic
+                    </h2>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div id="indicator-websocket-connection" class="panel panel-warning">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Websocket connection</h3>
+                                </div>
+                                <div class="panel-body">
+                                    Connection...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div id="indicator-chat-topic" class="panel panel-warning">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Chat topic connection</h3>
+                                </div>
+                                <div class="panel-body">
+                                    Subscribing...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div id="indicator-rest-api" class="panel panel-warning">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Rest Api</h3>
+                                </div>
+                                <div class="panel-body">
+                                    Requesting Rest Api <code>GET /api/hello</code>...
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div id="indicator-user-feeling" class="panel panel-warning">
+                                <div class="panel-heading">
+                                    <h3 class="panel-title">Your feeling</h3>
+                                </div>
+                                <div class="panel-body">
+                                    Checking your feeling...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h2>
+                        <span class="glyphicon glyphicon-earphone small" aria-hidden="true"></span>
+                        Rest Api
+                    </h2>
+
+                    <div class="rest-api">
+                        <button id="api-hello" type="button" class="btn btn-primary"><samp>GET /api/hello</samp></button>
+                        <button id="api-hello-sandstone" type="button" class="btn btn-primary"><samp>GET /api/hello/sandstone</samp></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="container-fluid">
+                <div class="text-center">
+                    <p>
+                        Sandstone edition is under
+                        <a href="https://github.com/eole-io/sandstone-edition/blob/master/LICENSE">MIT license</a>.
+                    </p>
+                    <p>
+                        Github links:
+                        <a href="https://github.com/eole-io/sandstone-edition">Sandstone edition</a>
+                        -
+                        <a href="https://github.com/eole-io/sandstone">Sandstone</a>
+                    </p>
+                    <br>
+                    <br>
+                    <p>
+                        Find me here:
+                        <a href="https://github.com/alcalyn">Github</a>
+                        -
+                        <a href="https://twitter.com/alcalyn_">Twitter</a>
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+        <script>
+            var Environment = {
+                restApiUrl: '//'+window.location.hostname+':8480/api',
+                websocketServer: 'ws://'+window.location.hostname+':8482'
+            };
+        </script>
+
+        <script src="js/autobahn.min.js"></script>
+        <script src="js/jquery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/utils.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>

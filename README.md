@@ -1,4 +1,4 @@
-Sandstone Fullstack
+Sandstone Edition
 ===================
 
 Build a real-time RestApi !
@@ -8,7 +8,7 @@ It uses Silex and websockets.
 
 ## Technical stack
 
-This fullstack integrates:
+This edition integrates:
 
  - [Sandstone](https://eole-io.github.io/sandstone/) (Silex with websockets)
  - **Docker** environment to mount the whole application (RestApi, websocket server, MariaDB, PHPMyAdmin)
@@ -21,7 +21,7 @@ This fullstack integrates:
 
 Sandstone requires PHP 5.5+, ZMQ and php-zmq extension.
 
-But the fullstack also has a Docker installation,
+But the edition also has a Docker installation,
 so you don't need to install PHP, ZMQ, php-zmq, mysql... using Docker.
 
 
@@ -31,8 +31,8 @@ This installation requires **make**, **Docker** and **docker-compose**.
 
 ``` bash
 # Install a new Sandstone project
-curl -L https://github.com/eole-io/sandstone-fullstack/archive/dev.tar.gz | tar xz
-cd sandstone-fullstack-dev/
+curl -L https://github.com/eole-io/sandstone-edition/archive/dev.tar.gz | tar xz
+cd sandstone-edition-dev/
 
 # Install and mount environment
 make
@@ -44,15 +44,15 @@ make
 > `chmod -R 777 var/*`
 > to make it work.
 
-Check your installation by going to http://0.0.0.0:8480/index-dev.php/api/hello
+Check your installation by going to the diagnostic page: http://0.0.0.0:8480/hello/world.html
 
 Docker runs the whole environment, the RestApi, the websocket server and PHPMyAdmin. You now have access to:
 
  - http://0.0.0.0:8480/index-dev.php/api/hello *hello world* route in **dev** mode.
  - http://0.0.0.0:8480/api/hello *hello world* route in **prod** mode.
  - http://0.0.0.0:8480/index-dev.php/_profiler/ Symfony web profiler (only dev mode).
- - http://0.0.0.0:8480/websocket-test.html A HTML page which connect to the websocket server and says hello on the chat (check your Javacript console).
  - http://0.0.0.0:8481/ PHPMyAdmin.
+ - `ws://0.0.0.0:8482/` Websocket server.
 
 You can now start to create your RestApi endpoints and websocket topics.
 
@@ -78,20 +78,32 @@ This requires PHP 5.5+, ZMQ, php-zmq extension, composer, and a database.
 Check [Install ZMQ and php-zmq on Linux](https://eole-io.github.io/sandstone/install-zmq-php-linux.html).
 
 ``` bash
-composer create-project eole/sanstone-fullstack
-cd sandstone-fullstack/
+composer create-project eole/sanstone-edition
+cd sandstone-edition/
 ```
 
 Install and configure your environment in `config/environment-dev.php`.
 
-Then go to something like `http://localhost/sandstone-fullstack/www/index-dev.php/api/hello`
-to check your install.
+Then go to the diagnostic page: `http://localhost/sandstone-edition/www/hello/world.html`
 
 Access to the **Silex console**:
 
 ``` bash
 php bin/console
 ```
+
+#### Other links
+
+> I will assume here that your webserver point to your application root with:
+>
+> `http://localhost/sandstone-edition/www/`
+
+You should also access to:
+
+ - `http://localhost/sandstone-edition/www/index-dev.php/api/hello` *hello world* route in **dev** mode.
+ - `http://localhost/sandstone-edition/www/api/hello` *hello world* route in **prod** mode.
+ - `http://localhost/sandstone-edition/www/index-dev.php/_profiler/` Symfony web profiler (only dev mode).
+ - `ws://localhost:8482` Websocket server.
 
 
 ## Cookbook
@@ -106,7 +118,7 @@ That means creating API endpoints, websocket topics...
 
 As Sandstone extends Silex, just create a controller class and a method, then mount it with Silex.
 
-Also, this fullstack allows to use **annotations** for routing.
+Also, this edition allows to use **annotations** for routing.
 
 In **src/App/Controller**:
 ``` php
@@ -341,7 +353,7 @@ Up to you to create a `HelloEvent` class, create serialization metadata for it..
 
 ### Doctrine
 
-Sandstone fullstack integrates Doctrine:
+Sandstone edition integrates Doctrine:
 
  - Doctrine DBAL and ORM are installed,
  - you can use entities with annotations or yaml mapping, the `orm:schema-tool`...
@@ -425,7 +437,7 @@ php bin/console orm:schema-tool:update --force
 
 ### Debugging with Symfony web profiler
 
-[Silex web profiler](https://github.com/silexphp/Silex-WebProfiler) is already integrated in Sandstone fullstack.
+[Silex web profiler](https://github.com/silexphp/Silex-WebProfiler) is already integrated in Sandstone edition.
 
 It is available under `/index-dev.php/_profiler`.
 
@@ -446,7 +458,7 @@ This is a server security against XSS attacks.
 To fix this issue, you have to configure your RestApi server
 to let him send responses to a precise domain name.
 
-The fullstack integrates [jdesrosiers/silex-cors-provider](https://github.com/jdesrosiers/silex-cors-provider),
+The edition integrates [jdesrosiers/silex-cors-provider](https://github.com/jdesrosiers/silex-cors-provider),
 so you just have to configure it:
 
 In **config/environment.php**, only serve `localhost` (if your front-end application is on `localhost`):

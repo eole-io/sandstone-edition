@@ -1,0 +1,23 @@
+body {
+    font-size: 16px;
+}
+#chat-output {
+    height: 150px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.panel-body {
+    min-height: 100px;
+}
+.rest-api .btn {
+    margin-bottom: 4px;
+}
+.glyphicon.small {
+    color: inherit;
+}
+footer {
+    background-color: #f8f5f0;
+    margin-top: 42px;
+    padding: 24px 0 42px;
+    min-height: 200px;
+}
