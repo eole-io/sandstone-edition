@@ -62,6 +62,12 @@ Access to the **Silex console**:
 docker exec -ti sandstone-php /bin/bash -c "php bin/console"
 ```
 
+Open a bash session to PHP Docker container:
+
+``` bash
+make bash
+```
+
 #### Docker default ports
 
 Once the environment mounted, Docker exposes by default these ports:
@@ -75,7 +81,7 @@ Once the environment mounted, Docker exposes by default these ports:
 
 This requires PHP 5.5+, ZMQ, php-zmq extension, composer, and a database.
 
-Check [Install ZMQ and php-zmq on Linux](https://eole-io.github.io/sandstone/install-zmq-php-linux.html).
+You may need to [install ZMQ and php-zmq on Linux](https://eole-io.github.io/sandstone/install-zmq-php-linux.html).
 
 #### Install a new Sandstone project
 
@@ -449,7 +455,7 @@ php bin/console orm:schema-tool:update --force
 
 [Silex web profiler](https://github.com/silexphp/Silex-WebProfiler) is already integrated in Sandstone edition.
 
-It is available under `/index-dev.php/_profiler`.
+It is available under `/index-dev.php/_profiler/`.
 
 It allows you to debug RestApi requests: exceptions, Doctrine queries, called listeners...
 
@@ -460,10 +466,10 @@ to check which messages has been sent to the websocket stack.
 ### Cross origin
 
 If your front-end application is **not** hosted under the same domain name
-(i.e `http://localhost` for the front-end and `http://localhost:8088` for the RestApi),
+(i.e `http://localhost` for the front-end and `http://localhost:8480` for the RestApi),
 then you probably get cross origin errors when trying to query your RestApi using Ajax.
 
-This is a server security against XSS attacks.
+This is a server-side security against XSS attacks.
 
 To fix this issue, you have to configure your RestApi server
 to let him send responses to a precise domain name.
