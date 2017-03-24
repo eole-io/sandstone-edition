@@ -8,7 +8,9 @@ var websocketSession = null;
 function onSessionOpen(session) {
     websocketSession = session;
     var event = new CustomEvent('websocketSessionReady', {
-        websocketSession: session,
+        detail: {
+            websocketSession: session
+        },
         bubbles: true,
         cancelable: true
     });
@@ -18,13 +20,9 @@ function onSessionOpen(session) {
 
     // Subscribe to 'chat/general' topic to display messages on chat output
     session.subscribe('chat', function (topic, event) {
-        console.log('message received', topic, event);
-
         setIndicator('chat-topic', 'success', 'Subscribed to chat topic.');
 
-        if (event.message) {
-            addToChat(event.message);
-        }
+        addToChat(event.message);
     });
 
     // Publish a message to 'chat/general' topic
@@ -43,6 +41,7 @@ function onError(code, reason, detail) {
 
     setIndicator('websocket-connection', 'danger', [code, reason, detail].join(' ; '));
     setIndicator('chat-topic', 'danger', 'Needs websocket connection first');
+    setIndicator('push', 'danger', 'Needs websocket connection first');
 }
 
 // Connect to chat server
@@ -61,11 +60,12 @@ $.get(Environment.restApiUrl+'/hello')
 
 // Testing Push notifications
 addEventListener('websocketSessionReady', function (e) {
-    e.websocketSession.subscribe('chat', function (topic, event) {
-        if (event.hello && 'push-1-2-1-2-test' === event.hello) {
+    e.detail.websocketSession.subscribe('chat', function (topic, event) {
+        if (-1 !== event.message.indexOf('push-1-2-1-2-test')) {
             setIndicator('push', 'success', 'Push notification received.');
         }
     });
-});
 
-$.get(Environment.restApiUrl+'/hello/push-1-2-1-2-test');
+    setIndicator('push', 'warning', 'Requesting Rest Api and waiting for push notification...');
+    $.get(Environment.restApiUrl+'/hello/push-1-2-1-2-test');
+});
