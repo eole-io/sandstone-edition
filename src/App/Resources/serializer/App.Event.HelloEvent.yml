@@ -1,0 +1,5 @@
+App\Event\HelloEvent:
+    exclusion_policy: NONE
+    properties:
+        name:
+            type: string

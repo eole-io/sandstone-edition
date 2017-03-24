@@ -1,0 +1,51 @@
+#!/usr/bin/php
+<?php
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
+use Silex\Application;
+
+$restApi = new RestApiApplication(array(
+    'project.root' => dirname(__DIR__),
+    'env' => 'dev',
+    'debug' => true,
+));
+
+$restApi->boot();
+$restApi->flush();
+
+displayRoutes($restApi);
+
+/**
+ * Display all routes registered in a Silex application.
+ * Important: the Silex application must have flushed its controllers before.
+ *
+ * @param Application $app
+ * @param OutputInterface $output
+ */
+function displayRoutes(Application $app, OutputInterface $output = null) {
+    if (null === $output) {
+        $output = new ConsoleOutput();
+    }
+
+    $table = new Table($output);
+
+    $table->setStyle('borderless');
+
+    $table->setHeaders(array(
+        'methods',
+        'path'
+    ));
+
+    foreach ($app['routes'] as $route) {
+        $table->addRow(array(
+            implode('|', $route->getMethods()),
+            $route->getPath(),
+        ));
+    }
+
+    $table->render();
+}

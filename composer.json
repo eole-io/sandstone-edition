@@ -1,0 +1,23 @@
+{
+    "name": "eole/sandstone-edition",
+    "description": "A pre-configured edition for the Sandstone microframework",
+    "license": "MIT",
+    "type": "project",
+    "require": {
+        "eole/sandstone": "^1.2.3",
+        "jdesrosiers/silex-cors-provider": "^1.4.0",
+        "alcalyn/serializable-api-response": "~1.0",
+        "doctrine/cache": "1.x",
+        "ddesrosiers/silex-annotation-provider": "2.x",
+        "dflydev/doctrine-orm-service-provider": "2.x"
+    },
+    "require-dev": {
+        "silex/web-profiler": "2.x",
+        "sorien/silex-dbal-profiler": "2.x"
+    },
+    "autoload": {
+        "psr-4": {
+            "": ["src/", "app/"]
+        }
+    }
+}

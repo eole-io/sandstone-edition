@@ -1,0 +1,16 @@
+#!/usr/bin/php
+<?php
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+use Eole\Sandstone\Websocket\Server;
+
+$app = new WebsocketApplication([
+    'project.root' => dirname(__DIR__),
+    'env' => 'dev',
+    'debug' => true,
+]);
+
+$websocketServer = new Server($app);
+
+$websocketServer->run();
