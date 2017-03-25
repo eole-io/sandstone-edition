@@ -172,10 +172,10 @@ class HelloController
 }
 ```
 
-> **Note**: Using `ApiResponse` allows to make your controller return a HTTP-agnostic object,
-> and is better when used with serializer
-> (see [Github alcalyn/serializable-api-response](https://github.com/alcalyn/serializable-api-response)).
-> Sandstone transform the `ApiResponse` to a Symfony `Response` only at the last time (after serialization).
+> **Note**: Using `ApiResponse` allows to make your controllers return a non-yet-serialized object
+> (see [alcalyn/serializable-api-response](https://github.com/alcalyn/serializable-api-response)).
+>
+> Sandstone transforms the `ApiResponse` to a Symfony `Response` only at the very end, after serialization.
 
 *Related documentation*:
 
