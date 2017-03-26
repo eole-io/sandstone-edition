@@ -51,7 +51,7 @@ Docker runs the whole environment, the RestApi, the websocket server and PHPMyAd
  - http://0.0.0.0:8480/index-dev.php/api/hello *hello world* route in **dev** mode.
  - http://0.0.0.0:8480/api/hello *hello world* route in **prod** mode.
  - http://0.0.0.0:8480/index-dev.php/_profiler/ Symfony web profiler (only dev mode).
- - http://0.0.0.0:8481/ PHPMyAdmin.
+ - http://0.0.0.0:8481/ PHPMyAdmin (login: `root` / `root`).
  - `ws://0.0.0.0:8482` Websocket server.
 
 You can now start to create your RestApi endpoints and websocket topics.
