@@ -51,7 +51,7 @@ Docker runs the whole environment, the RestApi, the websocket server and PHPMyAd
  - http://0.0.0.0:8480/index-dev.php/api/hello *hello world* route in **dev** mode.
  - http://0.0.0.0:8480/api/hello *hello world* route in **prod** mode.
  - http://0.0.0.0:8480/index-dev.php/_profiler/ Symfony web profiler (only dev mode).
- - http://0.0.0.0:8481/ PHPMyAdmin (login: `root` / `root`).
+ - http://0.0.0.0:8481 PHPMyAdmin (login: `root` / `root`).
  - `ws://0.0.0.0:8482` Websocket server.
 
 You can now start to create your RestApi endpoints and websocket topics.
@@ -136,7 +136,7 @@ As Sandstone extends Silex, just create a controller class and a method, then mo
 
 Also, this edition allows to use **annotations** for routing.
 
-In **src/App/Controller**:
+In **src/App/Controller/HelloController.php**:
 ``` php
 namespace App\Controller;
 
@@ -186,11 +186,11 @@ class HelloController
 ### Creating a websocket topic
 
 A websocket topic is like a "category", or a "channel" of communication.
-It allows to listen to messages from a same source,
-without receive all messages from the websocket server.
+It allows to listen to messages from a same "channel",
+without receiving all others messages from the websocket server.
 
-Technically, it also separate each topic in classes,
-then each topic has its own logic.
+Technically, each topic has its own `Topic` class,
+which contains its own logic.
 
 Under Sandstone, a topic has a name (i.e `chat/general`) and can be declared like a route.
 
@@ -221,7 +221,7 @@ class ChatTopic extends Topic
 
 #### Register the topic
 
-In **app/WebsocketApplication**:
+In **app/WebsocketApplication.php**:
 ``` php
 use App\Topic\ChatTopic;
 
@@ -251,7 +251,7 @@ $this
 ;
 ```
 
-> **Note** also that you can't use `->method('get')` or `->requireHttps()` for a topic route ;)
+> **Note**: You can't use `->method('get')` or `->requireHttps()` for a topic route ;)
 
 #### Retrieve route arguments from topic name
 
@@ -285,7 +285,7 @@ then this event will be forwarded (i.e redisptached) over the `WebsocketApplicat
 
 Then just listen this event from a topic, and do something like broadcast a message...
 
-#### Dispatch event from controller
+#### 1. Dispatch event from controller
 
 In **src/App/Controller/HelloController.php**:
 ``` php
@@ -298,9 +298,9 @@ public function getHello($name)
 > **Note**: The `container` is passed to your controllers constructors
 > if you use the `@SLX\Controller` annotation.
 
-#### Mark the event to be forwarded
+#### 2. Mark the event to be forwarded
 
-In **app/RestApiApplication**:
+In **app/RestApiApplication.php**:
 ``` php
 use App\Event\HelloEvent;
 
@@ -313,13 +313,13 @@ private function registerUserProviders()
 > **Note**: This must be done only in RestApi stack.
 > If it's done in websocket stack, the event will be redispatched infinitely to itself!
 
-#### Listen the event from a topic
+#### 3. Listen the event from a topic
 
 It will listen and receive the event
 that has been serialized/deserialized through the Push server,
 from the RestApi thread to the websocket server thread.
 
-In **src/App/Topic/ChatTopic**:
+In **src/App/Topic/ChatTopic.php**:
 ``` php
 namespace App\Topic;
 
@@ -359,12 +359,16 @@ class ChatTopic extends Topic implements EventSubscriberInterface
 > **Note**: Sandstone automatically subscribes topics (to the EventDispatcher)
 > that implement the `Symfony\Component\EventDispatcher\EventSubscriberInterface`.
 
-Up to you to create a `HelloEvent` class, create serialization metadata for it...
+Up to you to create a `HelloEvent` class and **create serialization metadata**.
+
+> **Note**: You need to create serialization metadata for objects that are forwarded.
+> It need to be serialized and deserialized around the Push server.
 
 *Related documentation*:
 
  - [Symfony EventSubscriber](http://symfony.com/doc/current/components/event_dispatcher.html#using-event-subscribers)
  - [Sandstone Topic class](https://eole-io.github.io/sandstone/examples/multichannel-chat.html)
+ - [Serializer metadata Yaml reference](http://jmsyst.com/libs/serializer/master/reference/yml_reference)
 
 
 ### Doctrine
