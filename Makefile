@@ -13,3 +13,6 @@ docker_update:
 
 bash:
 	docker exec -ti sandstone-php bash
+
+restart_websocket_server:
+	docker restart sandstone-ws
