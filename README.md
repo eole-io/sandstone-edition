@@ -44,6 +44,12 @@ make
 > `chmod -R 777 var/*`
 > to make it work.
 
+> ![Raspberry Pi](raspberrypi.png)
+> **Note**: There is also an ARMv7 environment
+> to mount Sandstone on Raspberry Pi:
+>
+> Just do `make -f Makefile.arm` instead of `make`.
+
 Check your installation by going to the diagnostic page: http://0.0.0.0:8480/hello/world.html
 
 Docker runs the whole environment, the RestApi, the websocket server and PHPMyAdmin. You now have access to:

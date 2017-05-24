@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+    rest-api:
+        image: lispmeister/rpi-nginx
+
+    websocket-server:
+        build: docker/php-fpm-rpi
+
+    php-fpm:
+        build: docker/php-fpm-rpi
+
+    database:
+        image: izone/arm:mariadb
+
+    phpmyadmin:
+        image: izone/arm:phpmyadmin
