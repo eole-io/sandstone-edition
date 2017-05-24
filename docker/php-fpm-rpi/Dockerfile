@@ -3,12 +3,15 @@ FROM alcalyn/rpi-php7-fpm-zmq
 # install PHP extensions & PECL modules with dependencies
 RUN apt-get update \
  && apt-get install -y \
+        bzip2 git wget \
+        zlib1g-dev \
         libicu-dev \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 RUN docker-php-ext-install intl \
- && docker-php-ext-install pdo_mysql mysqli
+ && docker-php-ext-install pdo_mysql mysqli \
+ && docker-php-ext-install zip
 
 # install composer
 RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
