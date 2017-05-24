@@ -2,7 +2,7 @@ version: '2'
 
 services:
     rest-api:
-        image: nginx:latest
+        image: nginx
         ports:
             - 8480:80
         volumes:
