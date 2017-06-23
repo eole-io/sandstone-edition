@@ -48,9 +48,15 @@ make
 
 > ![Raspberry Pi](raspberrypi.png)
 > **Note**: There is also an ARMv7 environment
-> to mount Sandstone on Raspberry Pi:
+> to mount Sandstone on Raspberry Pi.
 >
-> Just do `make -f Makefile.arm` instead of `make`.
+> Copy docker/docker-compose.arm.yml to docker-compose.override.yml
+> to use arm docker images:
+>
+> `cp docker/docker-compose.arm.yml docker-compose.override.yml`
+>
+> Or if you already have a docker-compose.override.yml,
+> change all images with the ones in `docker/docker-compose.arm.yml`.
 
 Then check your installation by going to the diagnostic page: http://0.0.0.0:8480/hello/world.html
 
