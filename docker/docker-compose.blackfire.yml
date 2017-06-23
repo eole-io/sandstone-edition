@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+    blackfire:
+        container_name: sandstone-blackfire
+        image: blackfire/blackfire
+        env_file: blackfire.env
+
+    php-fpm:
+        links:
+            - blackfire
