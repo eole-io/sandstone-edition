@@ -38,6 +38,8 @@ cd sandstone-edition-dev/
 make
 ```
 
+*See [About Makefile](#about-makefile) section to learn more about Makefile commands.*
+
 > **Note**: Sometimes you'll need to do either a
 > `chown -R {your_user}:{your_group} .`
 > or a
@@ -50,10 +52,13 @@ make
 >
 > Just do `make -f Makefile.arm` instead of `make`.
 
-Check your installation by going to the diagnostic page: http://0.0.0.0:8480/hello/world.html
+Then check your installation by going to the diagnostic page: http://0.0.0.0:8480/hello/world.html
+
+:heavy_check_mark: The installation is done.
 
 Docker runs the whole environment, the RestApi, the websocket server and PHPMyAdmin. You now have access to:
 
+ - http://0.0.0.0:8480/hello/world.html Diagnostic page.
  - http://0.0.0.0:8480/index-dev.php/api/hello *hello world* route in **dev** mode.
  - http://0.0.0.0:8480/api/hello *hello world* route in **prod** mode.
  - http://0.0.0.0:8480/index-dev.php/_profiler/ Symfony web profiler (only dev mode).
@@ -107,6 +112,8 @@ php bin\websocket-server
 ```
 
 Then go to the diagnostic page: `http://localhost/sandstone-edition/www/hello/world.html`
+
+:heavy_check_mark: The installation is done.
 
 Access to the **Silex console**:
 
@@ -504,6 +511,23 @@ return [
     ],
 ];
 ```
+
+
+### About Makefile
+
+The Makefile only works for a Docker installation.
+
+`make`: Used most of the time, install and run the project. Makes containers started.
+
+`make bash`: Open a bash session into php container.
+
+`make update`: Use it to update composer dependencies, rebuild and recreate docker containers.
+
+`make restart_websocket_server`: Should be used after the websocket source code changed,
+in example when you develop a websocket topic.
+
+`make optimize_autoloader`: Optimize composer autoloader and reduce autoloader execution time by ~80%.
+Only use it in prod. Use `make` to remove optimization.
 
 
 ## License
