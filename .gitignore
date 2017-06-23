@@ -5,3 +5,4 @@ var/logs/*
 !var/logs/.gitkeep
 composer.lock
 docker-compose.override.yml
+blackfire.env

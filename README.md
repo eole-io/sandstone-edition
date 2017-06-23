@@ -15,6 +15,7 @@ This edition integrates:
  - **Doctrine ORM** and Doctrine commands
  - **Symfony web profiler** for debugging RestApi requests and Push events
  - [Silex annotations](https://github.com/danadesrosiers/silex-annotation-provider) for controllers and routing annotations
+ - [Blackfire.io](#blackfire) docker instance to analyse your api endpoints performances.
 
 
 ## Installation
@@ -534,6 +535,46 @@ in example when you develop a websocket topic.
 
 `make optimize_autoloader`: Optimize composer autoloader and reduce autoloader execution time by ~80%.
 Only use it in prod. Use `make` to remove optimization.
+
+
+### Blackfire
+
+You can enable [blackfire.io](https://blackfire.io) in your docker environment by just adding some configuration.
+
+ - You need to have a blackfire account to have your secret tokens.
+
+ - Set your blackfire tokens in blackfire.env:
+
+`cp blackfire.env.dist blackfire.env`, then fill variables with your tokens.
+
+ - Add blackfire docker service from `docker/docker-compose.blackfire.yml` to your `docker-compose.override.yml`.
+
+If you don't have a `docker-compose.override.yml` yet,
+just do:
+
+`cp docker/docker-compose.blackfire.yml docker-compose.override.yml`
+
+Configuration is done, run `make` to install and start blackfire service.
+
+You can now profile an api call performances by doing:
+
+``` bash
+make blackfire url=http://0.0.0.0:8480/index-dev.php/api/hello
+```
+
+> **Note**:
+> If you already set your secret tokens in environment variables
+> and don't want to use `blackfire.env`,
+> you can replace, in your `docker-compose.override.yml`, the `env_file` by `environment`:
+
+``` yml
+    blackfire:
+        environment:
+            - BLACKFIRE_SERVER_ID
+            - BLACKFIRE_SERVER_TOKEN
+            - BLACKFIRE_CLIENT_ID
+            - BLACKFIRE_CLIENT_TOKEN
+```
 
 
 ## License

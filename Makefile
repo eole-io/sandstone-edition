@@ -30,3 +30,6 @@ bash:
 
 restart_websocket_server:
 	docker restart sandstone-ws
+
+blackfire:
+	docker exec sandstone-blackfire blackfire curl --proxy http://sandstone-web:80 $(url)
