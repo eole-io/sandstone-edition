@@ -12,6 +12,7 @@ services:
             - php-fpm
 
     websocket-server:
+        container_name: sandstone-ws
         build: docker/php-fpm
         command: php bin/websocket-server
         ports:

@@ -38,6 +38,8 @@ cd sandstone-edition-dev/
 make
 ```
 
+*See [About Makefile](#about-makefile) section to learn more about Makefile commands.*
+
 > **Note**: Sometimes you'll need to do either a
 > `chown -R {your_user}:{your_group} .`
 > or a
@@ -46,14 +48,23 @@ make
 
 > ![Raspberry Pi](raspberrypi.png)
 > **Note**: There is also an ARMv7 environment
-> to mount Sandstone on Raspberry Pi:
+> to mount Sandstone on Raspberry Pi.
 >
-> Just do `make -f Makefile.arm` instead of `make`.
+> Copy docker/docker-compose.arm.yml to docker-compose.override.yml
+> to use arm docker images:
+>
+> `cp docker/docker-compose.arm.yml docker-compose.override.yml`
+>
+> Or if you already have a docker-compose.override.yml,
+> change all images with the ones in `docker/docker-compose.arm.yml`.
 
-Check your installation by going to the diagnostic page: http://0.0.0.0:8480/hello/world.html
+Then check your installation by going to the diagnostic page: http://0.0.0.0:8480/hello/world.html
+
+:heavy_check_mark: The installation is done.
 
 Docker runs the whole environment, the RestApi, the websocket server and PHPMyAdmin. You now have access to:
 
+ - http://0.0.0.0:8480/hello/world.html Diagnostic page.
  - http://0.0.0.0:8480/index-dev.php/api/hello *hello world* route in **dev** mode.
  - http://0.0.0.0:8480/api/hello *hello world* route in **prod** mode.
  - http://0.0.0.0:8480/index-dev.php/_profiler/ Symfony web profiler (only dev mode).
@@ -107,6 +118,8 @@ php bin\websocket-server
 ```
 
 Then go to the diagnostic page: `http://localhost/sandstone-edition/www/hello/world.html`
+
+:heavy_check_mark: The installation is done.
 
 Access to the **Silex console**:
 
@@ -393,6 +406,8 @@ Here using annotations. In **src/App/Entity/Article.php**:
 ``` php
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping\Entity;
+
 /**
  * @Entity
  */
@@ -453,6 +468,12 @@ Use the Doctrine command:
 php bin/console orm:schema-tool:update --force
 ```
 
+#### Retrieve Repository from container
+
+``` php
+$app['orm.em']->getRepository('App\\Entity\\Article');
+```
+
 *Related documentation*:
 
  - [Serializer available **Types**](http://jmsyst.com/libs/serializer/master/reference/annotations#type) (`string`, `integer`, ...)
@@ -504,6 +525,25 @@ return [
     ],
 ];
 ```
+
+
+### About Makefile
+
+The Makefile only works for a Docker installation.
+
+`make`: Used most of the time, install and run the project. Makes containers started.
+
+`make bash`: Open a bash session into php container.
+
+`make update`: Use it to update composer dependencies, rebuild and recreate docker containers.
+
+`make logs`: display container logs.
+
+`make restart_websocket_server`: Should be used after the websocket source code changed,
+in example when you develop a websocket topic.
+
+`make optimize_autoloader`: Optimize composer autoloader and reduce autoloader execution time by ~80%.
+Only use it in prod. Use `make` to remove optimization.
 
 
 ## License
