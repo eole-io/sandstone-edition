@@ -406,6 +406,8 @@ Here using annotations. In **src/App/Entity/Article.php**:
 ``` php
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping\Entity;
+
 /**
  * @Entity
  */
@@ -464,6 +466,12 @@ Use the Doctrine command:
 
 ``` bash
 php bin/console orm:schema-tool:update --force
+```
+
+#### Retrieve Repository from container
+
+``` php
+$app['orm.em']->getRepository('App\\Entity\\Article');
 ```
 
 *Related documentation*:
@@ -528,6 +536,8 @@ The Makefile only works for a Docker installation.
 `make bash`: Open a bash session into php container.
 
 `make update`: Use it to update composer dependencies, rebuild and recreate docker containers.
+
+`make logs`: display container logs.
 
 `make restart_websocket_server`: Should be used after the websocket source code changed,
 in example when you develop a websocket topic.

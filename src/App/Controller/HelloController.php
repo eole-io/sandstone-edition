@@ -44,6 +44,8 @@ class HelloController
             'hello' => $name,
         ];
 
+        $result['articles'] = $this->container['orm.em']->getRepository('App\\Entity\\Article')->findAll();
+
         $this->container['dispatcher']->dispatch(HelloEvent::HELLO, new HelloEvent($name));
 
         return new ApiResponse($result, Response::HTTP_OK);

@@ -21,5 +21,9 @@ class HelloProvider implements ServiceProviderInterface
 
             return $mappings;
         });
+
+        $app['serializer.builder']
+            ->addMetadataDir($app['project.root'].'/src/App/Resources/serializer')
+        ;
     }
 }

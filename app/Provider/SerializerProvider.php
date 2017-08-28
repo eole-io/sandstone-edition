@@ -18,7 +18,6 @@ class SerializerProvider implements ServiceProviderInterface
 
         // Register serializer metadata
         $app['serializer.builder']
-            ->addMetadataDir($app['project.root'].'/src/App/Resources/serializer')
             ->setCacheDir($app['project.root'].'/var/cache/serializer')
         ;
     }

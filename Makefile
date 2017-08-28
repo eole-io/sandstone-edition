@@ -22,6 +22,9 @@ update:
 
 	docker-compose up --build --force-recreate -d
 
+logs:
+	docker-compose logs -ft
+
 optimize_autoloader:
 	docker exec -ti sandstone-php sh -c "composer install --optimize-autoloader"
 
