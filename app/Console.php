@@ -6,6 +6,7 @@ use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Application as ConsoleApplication;
 use Application as SilexApplication;
+use App\Command\HelloCommand;
 
 class Console extends ConsoleApplication
 {
@@ -17,7 +18,8 @@ class Console extends ConsoleApplication
     /**
      * Console application constructor.
      *
-     * @param SilexApplication $silexApplication
+     * @param SilexApplication $silexApplication The Sandstone RestApi stack
+     *                                           (to have push event from console commands working).
      */
     public function __construct(SilexApplication $silexApplication)
     {
@@ -27,6 +29,15 @@ class Console extends ConsoleApplication
         $this->silexApplication->boot();
 
         $this->registerDoctrineCommands();
+        $this->registerUserCommands();
+    }
+
+    /**
+     * User custom commands.
+     */
+    private function registerUserCommands()
+    {
+        $this->add(new HelloCommand($this->silexApplication['dispatcher']));
     }
 
     private function registerDoctrineCommands()
