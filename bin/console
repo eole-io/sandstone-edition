@@ -3,7 +3,7 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-$app = new Application(array(
+$app = new RestApiApplication(array(
     'project.root' => dirname(__DIR__),
     'env' => 'dev',
     'debug' => true,
