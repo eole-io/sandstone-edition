@@ -20,6 +20,6 @@ class WebsocketApplication extends Application
      */
     private function registerUserProviders()
     {
-        $this->register(new App\HelloWebsocketProvider());
+        $this->register(new App\AppWebsocketProvider());
     }
 }

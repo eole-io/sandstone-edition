@@ -1,4 +1,4 @@
-all: install
+all: install book
 
 install:
 	docker-compose up --no-deps -d php-fpm database
@@ -33,3 +33,27 @@ bash:
 
 restart_websocket_server:
 	docker restart sandstone-ws
+
+book:
+	#
+	# Default urls:
+	#  http://0.0.0.0:8480/hello/world.html          Diagnostic page.
+	#  http://0.0.0.0:8480/index-dev.php/api/hello   *hello world* route in **dev** mode.
+	#  http://0.0.0.0:8480/api/hello                 *hello world* route in **prod** mode.
+	#  http://0.0.0.0:8480/index-dev.php/_profiler/  Symfony web profiler (only dev mode).
+	#  http://0.0.0.0:8481                           PHPMyAdmin (login: `root` / `root`).
+	#  ws://0.0.0.0:8482                             Websocket server.
+	#
+	# Make commands:
+	#  make bash                        Enter in php container
+	#  make logs                        Display containers logs and errors
+	#  make update                      rebuild containers, update composer dependencies...
+	#  make restart_websocket_server    Reload websocket stack, i.e when code is updated
+	#  make book                        Display this help
+	#
+	# See Sandstone edition cookbook:
+	#  https://github.com/eole-io/sandstone-edition
+	#
+	# See Sandstone documentation:
+	#  https://eole-io.github.io/sandstone
+	#

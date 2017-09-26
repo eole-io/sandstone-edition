@@ -34,6 +34,6 @@ class RestApiApplication extends Application
      */
     private function registerUserProviders()
     {
-        $this->register(new App\HelloRestApiProvider());
+        $this->register(new App\AppRestApiProvider());
     }
 }

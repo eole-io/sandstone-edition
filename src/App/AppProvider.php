@@ -5,7 +5,7 @@ namespace App;
 use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 
-class HelloProvider implements ServiceProviderInterface
+class AppProvider implements ServiceProviderInterface
 {
     /**
      * {@InheritDoc}
