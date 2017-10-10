@@ -31,4 +31,17 @@ return [
     'cors' => [
         'cors.allowOrigin' => '*',
     ],
+    'oauth' => [
+        'scope' => [
+            'id' => 'sandstone-scope',
+            'description' => 'Sandstone scope.',
+        ],
+        'clients' => [
+            'my-web-application' => [
+                'name' => 'my-app-name',
+                'id' => 'my-app',
+                'secret' => 'my-app-secret',
+            ],
+        ],
+    ],
 ];

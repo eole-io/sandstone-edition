@@ -23,6 +23,36 @@ class Application extends BaseApplication
         $this->registerUserProviders();
 
         $this->register(new Provider\DoctrineProvider());
+
+        $this['app.user_provider'] = function () {
+            return new \Symfony\Component\Security\Core\User\InMemoryUserProvider([
+                // username: admin / password: foo
+                'admin' => [
+                    'roles' => ['ROLE_ADMIN'],
+                    'password' => '$2y$10$3i9/lVd8UOFIJ6PAMFt8gu3/r5g0qeCJvoSlLCsvMTythye19F77a',
+                ],
+            ]);
+        };
+
+        $this->register(new \Silex\Provider\SecurityServiceProvider(), [
+            'security.firewalls' => [
+                'api' => [
+                    'pattern' => '^/api',
+                    'oauth' => true,
+                    'stateless' => true,
+                    'anonymous' => true,
+                    'users' => $this['app.user_provider'],
+                ],
+            ],
+        ]);
+
+        $this->register(new \Eole\Sandstone\OAuth2\Silex\OAuth2ServiceProvider(), [
+            'oauth.firewall_name' => 'api',
+            'oauth.security.user_provider' => 'app.user_provider',
+            'oauth.tokens_dir' => $this['project.root'].'/var/oauth-tokens',
+            'oauth.scope' => $this['environment']['oauth']['scope'],
+            'oauth.clients' => $this['environment']['oauth']['clients'],
+        ]);
     }
 
     /**

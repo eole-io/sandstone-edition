@@ -42,6 +42,8 @@ class HelloController
     {
         $result = [
             'hello' => $name,
+            'token' => $this->container->offsetExists('security.token_storage'),
+            'authenticated' => $this->container->offsetExists('user') && $this->container['user'] ? $this->container['user']->getUsername() : 'nope',
         ];
 
         $result['articles'] = $this->container['orm.em']->getRepository('App\\Entity\\Article')->findAll();

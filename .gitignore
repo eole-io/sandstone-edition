@@ -1,7 +1,11 @@
 vendor/
 var/cache/*
 var/logs/*
+var/oauth-tokens/access-tokens/*
+var/oauth-tokens/refresh-tokens/*
 !var/cache/.gitkeep
 !var/logs/.gitkeep
+!var/oauth-tokens/access-tokens/.gitkeep
+!var/oauth-tokens/refresh-tokens/.gitkeep
 composer.lock
 docker-compose.override.yml
