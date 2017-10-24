@@ -1,4 +1,4 @@
-all: install book
+all: install run book
 
 install:
 	docker-compose up --no-deps -d php-fpm database
@@ -8,8 +8,6 @@ install:
 	docker exec -ti sandstone-database sh -c "mysql -u root -proot -e 'create database if not exists sandstone;'"
 	docker exec -ti sandstone-php sh -c "bin/console orm:schema-tool:update --dump-sql"
 	docker exec -ti sandstone-php sh -c "bin/console orm:schema-tool:update --force"
-
-	docker-compose up -d
 
 update:
 	docker-compose up --build --force-recreate --no-deps -d php-fpm database
@@ -22,6 +20,9 @@ update:
 
 	docker-compose up --build --force-recreate -d
 
+run:
+	docker-compose up -d
+
 logs:
 	docker-compose logs -ft
 
@@ -29,10 +30,17 @@ optimize_autoloader:
 	docker exec -ti sandstone-php sh -c "composer install --optimize-autoloader"
 
 bash:
+	docker-compose up --no-deps -d php-fpm
 	docker exec -ti sandstone-php bash
 
 restart_websocket_server:
 	docker restart sandstone-ws
+
+generate_certificicate:
+	mkdir -p config/tls
+	rm -fr config/tls/*.pem
+	openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes
+	mv *.pem config/tls/
 
 book:
 	#

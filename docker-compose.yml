@@ -8,6 +8,8 @@ services:
         volumes:
             - .:/var/www/html/
             - ./docker/rest-api/nginx.conf:/etc/nginx/conf.d/default.conf
+            - ./config/tls/cert.pem:/etc/certs/sandstone.pem
+            - ./config/tls/key.pem:/etc/private/sandstone.pem
         links:
             - php-fpm
 

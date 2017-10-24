@@ -3,8 +3,14 @@
     "description": "A pre-configured edition for the Sandstone microframework",
     "license": "MIT",
     "type": "project",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "../sandstone"
+        }
+    ],
     "require": {
-        "eole/sandstone": "^1.2.3",
+        "eole/sandstone": "dev-feature/tls",
         "jdesrosiers/silex-cors-provider": "^1.4.0",
         "alcalyn/serializable-api-response": "~1.0",
         "doctrine/cache": "1.x",
@@ -17,7 +23,8 @@
     },
     "autoload": {
         "psr-4": {
-            "": ["src/", "app/"]
+            "": ["src/", "app/"],
+            "Eole\\Sandstone\\": "../sandstone/src/"
         }
     }
 }

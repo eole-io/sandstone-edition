@@ -18,6 +18,7 @@ class Application extends BaseApplication
         $this->register(new Provider\ApiResponseProvider());
         $this->register(new Provider\WebsocketServerProvider());
         $this->register(new Provider\PushProvider());
+        $this->register(new Provider\TlsProvider());
         $this->register(new Provider\ServiceProvider());
 
         $this->registerUserProviders();
