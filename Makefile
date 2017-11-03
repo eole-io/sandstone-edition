@@ -47,10 +47,13 @@ book:
 	#  ws://0.0.0.0:8482                             Websocket server.
 	#
 	# Make commands:
+	#  make                             Install application and run it
+	#  make run                         Run application
 	#  make bash                        Enter in php container
 	#  make logs                        Display containers logs and errors
 	#  make update                      rebuild containers, update composer dependencies...
 	#  make restart_websocket_server    Reload websocket stack, i.e when code is updated
+        #  make optimize_autoloader         Enhance composer autoload performances
 	#  make book                        Display this help
 	#
 	# See Sandstone edition cookbook:

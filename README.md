@@ -19,7 +19,7 @@ This edition integrates:
 
 ## Installation
 
-Sandstone requires PHP 5.5+, ZMQ and php-zmq extension.
+Sandstone requires PHP 5.6+, ZMQ and php-zmq extension.
 
 But the edition also has a Docker installation,
 so you don't need to install PHP, ZMQ, php-zmq, mysql... using Docker.
@@ -96,7 +96,7 @@ Once the environment mounted, Docker exposes by default these ports:
 
 ### Normal installation
 
-This requires PHP 5.5+, ZMQ, php-zmq extension, composer, and a database.
+This requires PHP 5.6+, ZMQ, php-zmq extension, composer, and a database.
 
 You may need to [install ZMQ and php-zmq on Linux](https://eole-io.github.io/sandstone/install-zmq-php-linux.html).
 
@@ -533,6 +533,8 @@ The Makefile only works for a Docker installation.
 
 `make`: Used most of the time, install and run the project. Makes containers started.
 
+`make run`: Start containers.
+
 `make bash`: Open a bash session into php container.
 
 `make update`: Use it to update composer dependencies, rebuild and recreate docker containers.
@@ -544,6 +546,8 @@ in example when you develop a websocket topic.
 
 `make optimize_autoloader`: Optimize composer autoloader and reduce autoloader execution time by ~80%.
 Only use it in prod. Use `make` to remove optimization.
+
+`make book`: Display help (make commands, urls to api, PHPMyAdmin...)
 
 
 ## License
