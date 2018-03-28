@@ -36,6 +36,9 @@ bash:
 restart_websocket_server:
 	docker restart sandstone-ws
 
+stop:
+	docker-compose stop
+
 book:
 	#
 	# Default urls:
