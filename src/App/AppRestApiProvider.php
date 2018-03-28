@@ -6,7 +6,7 @@ use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 use App\Event\HelloEvent;
 
-class HelloRestApiProvider implements ServiceProviderInterface
+class AppRestApiProvider implements ServiceProviderInterface
 {
     /**
      * {@InheritDoc}

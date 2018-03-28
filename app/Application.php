@@ -31,6 +31,6 @@ class Application extends BaseApplication
      */
     private function registerUserProviders()
     {
-        $this->register(new App\HelloProvider());
+        $this->register(new App\AppProvider());
     }
 }

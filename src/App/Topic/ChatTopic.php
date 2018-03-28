@@ -41,7 +41,7 @@ class ChatTopic extends Topic implements EventSubscriberInterface
     public function onHello(HelloEvent $event)
     {
         $this->broadcast([
-            'message' => 'Someone called GET /api/hello. Hello '.$event->getName(),
+            'message' => 'Hello event dispatched. Hello '.$event->getName(),
         ]);
     }
 }

@@ -21,3 +21,5 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
  && mv composer /usr/local/bin/composer
 
 WORKDIR "/var/www/html"
+
+RUN ln -s /usr/local/bin/php /usr/bin/php

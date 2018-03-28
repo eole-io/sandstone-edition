@@ -6,7 +6,7 @@ use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 use App\Topic\ChatTopic;
 
-class HelloWebsocketProvider implements ServiceProviderInterface
+class AppWebsocketProvider implements ServiceProviderInterface
 {
     /**
      * {@InheritDoc}
